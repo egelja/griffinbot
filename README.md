@@ -16,7 +16,7 @@ A bot for the Roycemore Discord server.
 
 ## About
 
-This is s a Discord bot for the Roycemore Discord server. It provides moderation tools and is a "serious bot" without many games.
+This is s a Discord bot for the Roycemore Discord server. It is a game bot made from submitted community bots.
 
 ## Getting Started
 
@@ -69,4 +69,4 @@ You can use [PM2](https://pm2.keymetrics.io/) to deploy it. If you have a better
 ## Authors
 
 - [@NinoMaruszewski](https://bitbucket.org/NinoMaruszewski/) - Idea & Initial work
-- [@AlemSnyder](https://github.com/AlemSnyder/) - Main work
+- [@AlemSnyder](https://github.com/AlemSnyder/) - Minesweeper
