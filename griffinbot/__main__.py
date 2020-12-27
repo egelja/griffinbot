@@ -52,7 +52,7 @@ async def on_ready() -> None:
 # Load cogs
 for file in os.listdir(os.path.join(".", "griffinbot", "exts")):
     if file.endswith(".py") and not file.startswith("_"):
-        bot.load_extension(f"roycemorebot.exts.{file[:-3]}")
+        bot.load_extension(f"griffinbot.exts.{file[:-3]}")
 
 
 @bot.command()

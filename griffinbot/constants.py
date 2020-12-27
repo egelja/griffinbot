@@ -97,6 +97,17 @@ class Bot(metaclass=JSONGetter):
     bot_token: str
 
 
+class StaffRoles(metaclass=JSONGetter):
+    """Roles from the guild of the bot."""
+
+    section = "guild"
+    subsection = "staff_roles"
+
+    admin_role: int
+    mod_role: int
+    bot_team_role: int
+
+
 class Channels(metaclass=JSONGetter):
     """Channels from the guild of the bot."""
 
@@ -117,3 +128,7 @@ class Emoji(metaclass=JSONGetter):
     warning: str
     no: str
     green_check: str
+
+
+# Groups
+MOD_ROLES = [StaffRoles.mod_role, StaffRoles.admin_role]
