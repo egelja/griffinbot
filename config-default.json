@@ -1,1 +1,20 @@
-{ }
+{
+    "bot": {
+        "prefix": ".",
+        "bot_token": "!ENV"
+    },
+    "guild":{
+        "channels": {
+            "griffinbot_commands": 792886140117188622,
+            "bot_log": 790600881003429908
+        }
+    },
+    "style": {
+        "emoji": {
+            "ok": ":+1:",
+            "warning": ":warning:",
+            "no": ":x:",
+            "green_check": ":white_check_mark:"
+        }
+    }
+}
