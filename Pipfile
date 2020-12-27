@@ -1,0 +1,33 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+"discord.py" = "1.5.1"
+coloredlogs = "*"
+
+[dev-packages]
+flake8 = "*"
+flake8-annotations = "*"
+flake8-bugbear = "*"
+flake8-builtins = "*"
+flake8-docstrings = "*"
+flake8-import-order = "*"
+flake8-tidy-imports = "*"
+pep8-naming = "*"
+isort = "*"
+pre-commit = "*"
+black = "*"
+
+[requires]
+python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true
+
+[scripts]
+start = "python -m griffinbot"
+lint = "pre-commit run --all-files"
+precommit = "pre-commit install"
+format = "black .; isort ."
