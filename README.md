@@ -1,6 +1,6 @@
 <p align="center">
   <a href="" rel="noopener">
- <img width=200px height=200px src="https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fimg3.wikia.nocookie.net%2F__cb20131011222536%2Fdisney%2Fimages%2Ff%2Ff8%2FGriffin.png&f=1&nofb=1"></a>
+ <img width=200px height=200px src="https://cdn.pixabay.com/photo/2019/02/25/00/54/griffin-4018762_960_720.png"></a>
 </p>
 
 <h3 align="center">Griffin Bot</h3>
