@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="" rel="noopener">
+  <a href="https://github.com/NinoMaruszewski/griffinbot" rel="noopener">
  <img width=200px height=200px src="https://cdn.pixabay.com/photo/2019/02/25/00/54/griffin-4018762_960_720.png"></a>
 </p>
 
