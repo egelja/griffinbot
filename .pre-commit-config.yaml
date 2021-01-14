@@ -14,7 +14,12 @@ repos:
     rev: v1.5.1
     hooks:
       - id: python-check-blanket-noqa
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.8.4
+  - repo: local
     hooks:
       - id: flake8
+        name: Flake8
+        description: This hook runs flake8 within our project's pipenv environment.
+        entry: pipenv run flake8
+        language: system
+        types: [python]
+        require_serial: true

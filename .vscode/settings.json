@@ -13,7 +13,7 @@
         "--max-complexity=10",
         "--select=A,ANN,B,C,D,E,EXE,F,I,N,W,B950"
     ],
-    "python.pythonPath": "C:\\Users\\haile\\.virtualenvs\\griffinbot-_iiV1KXT\\Scripts\\python.exe",
+    "python.pythonPath": "C:\\Users\\ninom\\Desktop\\Programing\\BitBucket\\Python\\discord-bots\\griffinbot\\.venv\\Scripts\\python.exe",
     "cSpell.words": [
         "griffinbot"
     ],
