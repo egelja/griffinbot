@@ -49,7 +49,10 @@ class Status(commands.Cog):
         hours, rem = divmod(uptime.seconds, 3600)
         minutes, seconds = divmod(rem, 60)
         await ctx.send(
-            f"I've been online for {days} day{'s' if days != 1 else ''}, {hours} hour{'s' if hours != 1 else ''}, {minutes} minute{'s' if minutes != 1 else ''}, and {seconds} second{'s' if seconds != 1 else ''}."
+            f"I've been online for {days} day{'s' if days != 1 else ''}, "
+            f"{hours} hour{'s' if hours != 1 else ''}, "
+            f"{minutes} minute{'s' if minutes != 1 else ''}, "
+            f"and {seconds} second{'s' if seconds != 1 else ''}."
         )
 
     @commands.guild_only()

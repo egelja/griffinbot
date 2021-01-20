@@ -1,0 +1,25 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Defaults
+[*]
+indent_style = space
+indent_size = 4
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Python max line length is 80 chars
+[*.py]
+max_line_length = 80
+
+# JSON and HTML/MD standard is 2 spaces
+[*.{json,md}]
+indent_size = 2
+
+# Pipenv does 4-space indentation it seems
+[Pipfile.lock]
+indent_size = 4
