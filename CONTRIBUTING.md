@@ -1,4 +1,5 @@
 # Contributing
+
 To contribute to the bot, follow these steps:
 
 1. Install [Python](https://python.org).

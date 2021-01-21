@@ -1,25 +1,25 @@
 {
-    "bot": {
-        "prefix": ".",
-        "bot_token": "!ENV"
+  "bot": {
+    "prefix": ".",
+    "bot_token": "!ENV"
+  },
+  "guild": {
+    "staff_roles": {
+      "admin_role": 786312173667745812,
+      "mod_role": 786309162828562474,
+      "bot_team_role": 789869191138246657
     },
-    "guild": {
-        "staff_roles": {
-            "admin_role": 786312173667745812,
-            "mod_role": 786309162828562474,
-            "bot_team_role": 789869191138246657
-        },
-        "channels": {
-            "griffinbot_commands": 792886140117188622,
-            "bot_log": 790600881003429908
-        }
-    },
-    "style": {
-        "emoji": {
-            "ok": ":+1:",
-            "warning": ":warning:",
-            "no": ":x:",
-            "green_check": ":white_check_mark:"
-        }
+    "channels": {
+      "griffinbot_commands": 792886140117188622,
+      "bot_log": 790600881003429908
     }
+  },
+  "style": {
+    "emoji": {
+      "ok": ":+1:",
+      "warning": ":warning:",
+      "no": ":x:",
+      "green_check": ":white_check_mark:"
+    }
+  }
 }

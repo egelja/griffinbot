@@ -1,0 +1,23 @@
+{
+  "recommendations": [
+    "aaron-bond.better-comments",
+    "bungcip.better-toml",
+    "EditorConfig.EditorConfig",
+    "GitHub.vscode-pull-request-github",
+    "Gruntfuggly.todo-tree",
+    "IBM.output-colorizer",
+    "KevinRose.vsc-python-indent",
+    "mhutchie.git-graph",
+    "mikestead.dotenv",
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "njpwerner.autodocstring",
+    "redhat.vscode-yaml",
+    "streetsidesoftware.code-spell-checker",
+    "VisualStudioExptTeam.vscodeintellicode"
+  ],
+  "unwantedRecommendations": [
+    "alexcvzz.vscode-sqlite",
+    "ryanluker.vscode-coverage-gutters"
+  ]
+}

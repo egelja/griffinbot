@@ -1,23 +1,45 @@
 {
-    "[python]": {
-        "editor.rulers": [
-            80
-        ],
-        "editor.codeActionsOnSave": {
-            "source.organizeImports": true
-        }
-    },
-    "python.linting.flake8Args": [
-        "--max-line-length=80",
-        "--ignore=D203,E203,E501,W503,D100,D104,D105,D107,ANN101,ANN002,ANN003,ANN204",
-        "--max-complexity=10",
-        "--select=A,ANN,B,C,D,E,EXE,F,I,N,W,B950"
+  "python.linting.flake8Args": [
+    "--max-line-length=80",
+    "--ignore=D203,E203,E501,W503,D100,D104,D105,D107,ANN101,ANN002,ANN003,ANN204",
+    "--max-complexity=10",
+    "--select=A,ANN,B,C,D,E,EXE,F,I,N,W,B950"
+  ],
+  "python.sortImports.args": [
+    "--multi-line=3",
+    "--trailing-comma",
+    "--force-grid-wrap=0",
+    "--use-parentheses",
+    "--line-width=88"
+  ],
+  "editor.formatOnSave": true,
+  "python.pythonPath": "C:\\Users\\ninom\\Desktop\\Programing\\BitBucket\\Python\\discord-bots\\griffinbot\\.venv\\Scripts\\python.exe",
+  "cSpell.words": [
+    "griffinbot"
+  ],
+  "python.linting.flake8Enabled": true,
+  "python.linting.enabled": true,
+  "editor.quickSuggestions": true,
+  "cSpell.diagnosticLevel": "Warning",
+  "editor.wrappingIndent": "indent",
+  "python.languageServer": "Pylance",
+  "python.autoComplete.addBrackets": true,
+  "[python]": {
+    "editor.rulers": [
+      80
     ],
-    "python.pythonPath": "C:\\Users\\ninom\\Desktop\\Programing\\BitBucket\\Python\\discord-bots\\griffinbot\\.venv\\Scripts\\python.exe",
-    "cSpell.words": [
-        "griffinbot"
-    ],
-    "python.formatting.provider": "black",
-    "python.linting.flake8Enabled": true,
-    "editor.formatOnSave": true
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
+  "[git-commit]": {
+    "editor.rulers": [
+      50
+    ]
+  },
+  "python.formatting.provider": "black",
+  "files.trimTrailingWhitespace": true,
+  "python.analysis.completeFunctionParens": true,
+  "files.insertFinalNewline": true,
+  "pythonIndent.trimLinesWithOnlyWhitespace": true
 }
