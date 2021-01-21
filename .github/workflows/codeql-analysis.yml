@@ -36,7 +36,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        
+
       # Use python 3.9
       - name: Set up Python
         uses: actions/setup-python@v2
