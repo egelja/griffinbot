@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import logging
 from random import sample
@@ -60,9 +62,9 @@ class GameBoard:
             self.bombPositions.append((bomb_x, bomb_y))
 
         for bomb_x, bomb_y in self.bombPositions:
-            for tile in self.buttons[bomb_x][bomb_y].getAdjacent():
+            for tile in self.buttons[bomb_x][bomb_y].get_adjacent():
                 if not tile.isBomb:
-                    tile.revealImageState += 1
+                    tile.reveal_image_state += 1
 
     def game_over(self) -> None:
         """Game over."""
@@ -71,22 +73,23 @@ class GameBoard:
     def cleared(self) -> bool:
         """Check if the player has cleared the gameboard of mines."""
         for row in self.buttons:
-            for Tile in row:
-                if (not Tile.isBomb) and Tile.covered:
+            for tile in row:
+                if (not tile.isBomb) and tile.covered:
                     return False
         return True
 
-    def to_covered_message(self):
+    def to_covered_message(self) -> str:
         """Return the board as a covered (spoilers) message."""
         msg = ""
         for row in self.buttons:
             for tile in row:
-                msg = msg + "||" + num_to_emoji(tile.revealImageState) + "||"
+                msg = msg + "||" + num_to_emoji(tile.reveal_image_state) + "||"
             if not row == self.buttons[-1]:
                 msg = msg + "\n"
         return msg
 
-    def to_message(self):
+    def to_message(self) -> str:
+        """Return the board as a emoji message."""
         msg = ":blue_square:"
         x = 1
         while x <= len(self.buttons[0]):
@@ -97,8 +100,8 @@ class GameBoard:
         for row in self.buttons:
             msg = msg + num_to_emoji(x)
             x += 1
-            for Tile in row:
-                msg = msg + Tile.toemoji()
+            for tile in row:
+                msg = msg + tile.to_emoji()
             if not row == self.buttons[-1]:
                 msg = msg + "\n"
         return msg
@@ -112,15 +115,15 @@ class Tile:
         self.isBomb = False
         self.x = x
         self.y = y
-        self.TileImageState = 0
-        self.revealImageState = 0
+        self.tile_image_state = 0
+        self.reveal_image_state = 0
         self.gameboard = gameboard
 
     def left_click(self) -> None:
         """Simulate a left click by the user."""
         if self.gameboard.gameover:
             return  # the game is over
-        elif self.TileImageState != 0:
+        elif self.tile_image_state != 0:
             return  # flag or ?
         elif not self.gameboard.started:  # start the game
             self.gameboard.started = True
@@ -140,23 +143,27 @@ class Tile:
     def reveal(self) -> None:
         """Reveal the tile."""
         self.covered = False
-        if self.revealImageState == 0:
-            for tile in self.getAdjacent():
-                if tile.covered and tile.TileImageState == 0:
+        if self.reveal_image_state == 0:
+            for tile in self.get_adjacent():
+                if tile.covered and tile.tile_image_state == 0:
                     tile.reveal()
 
-    def Rclick(self, imgstate):
+    def right_click(self, image_state: int) -> None:
+        """Right click the tile."""
         if self.gameboard.gameover:
             return
-        self.TileImageState = imgstate
+        self.tile_image_state = image_state
 
-    def bomb(self):
+    def bomb(self) -> None:
+        """Change the tile to a bomb."""
         self.isBomb = True
-        self.revealImageState = -1
+        self.reveal_image_state = -1
 
-    def getAdjacent(self):
-        adjacents = []
-        for Dx, Dy in (
+    def get_adjacent(self) -> list[Tile]:
+        """Get the adjacent tiles."""  # what did you think? it's literally the
+        # name of the function.
+        adjacent = []
+        for dx, dy in (
             (1, -1),
             (1, 0),
             (1, 1),
@@ -166,47 +173,30 @@ class Tile:
             (-1, -1),
             (0, -1),
         ):
-            Xp = self.x + Dx
-            Yp = self.y + Dy
+            xp = self.x + dx
+            yp = self.y + dy
             if not (
-                Xp < 0 or Xp >= self.gameboard.x or Yp < 0 or Yp >= self.gameboard.y
+                xp < 0 or xp >= self.gameboard.x or yp < 0 or yp >= self.gameboard.y
             ):
-                adjacents.append(self.gameboard.buttons[Xp][Yp])
-        return adjacents
+                adjacent.append(self.gameboard.buttons[xp][yp])
+        return adjacent
 
-    def toemoji(self):
+    def to_emoji(self) -> str:
+        """Convert the tile to emoji."""
         if self.gameboard.gameover:
             if self.covered:
                 if self.isBomb:
                     return ":bomb:"
-                elif self.TileImageState == 1:
+                elif self.tile_image_state == 1:
                     return ":flag_black:"
-                return {0: "⬜", 1: "🚩", 2: "❓"}[self.TileImageState]
+                return {0: "⬜", 1: "🚩", 2: "❓"}[self.tile_image_state]
             else:
-                return num_to_emoji(self.revealImageState)
+                return num_to_emoji(self.reveal_image_state)
         else:
             if self.covered:
-                return {0: "⬜", 1: "🚩", 2: "❓"}[self.TileImageState]
+                return {0: "⬜", 1: "🚩", 2: "❓"}[self.tile_image_state]
             else:
-                return num_to_emoji(self.revealImageState)
-
-
-class MinesweeperGame:
-    def __init__(self, minesweepersolver, X=8, Y=8, Bombs=10):
-
-        self.X, self.Y, self.Bombs = X, Y, Bombs
-        self.GB = GameBoard(self.X, self.Y, self.Bombs)
-
-    #     self.Solver = minesweepersolver
-
-    # def run(self):
-    #     self.Solver(self.GB)
-    #     covered = 0
-    #     for row in self.GB.buttons:
-    #         for Tile in row:
-    #             if not Tile.isBomb and Tile.covered:
-    #                 covered += 1
-    #     return (covered, self.GB.guesses)
+                return num_to_emoji(self.reveal_image_state)
 
 
 class Minesweeper(commands.Cog):
@@ -223,36 +213,42 @@ class Minesweeper(commands.Cog):
         await ctx.send_help(ctx.command)
 
     @minesweeper_group.command(name="spoilers-game")
-    async def coveredGame(
+    async def spoilers_game(
         self,
         ctx: commands.Context,
         bombs: int = 10,
-        xdistance: int = 8,
-        ydistance: int = 8,
+        x_distance: int = 8,
+        y_distance: int = 8,
         solvable: bool = False,
-    ):
-        """Sends a spoilers minesweeper board"""
-
+    ) -> None:
+        """Send a spoilers minesweeper board."""
         if solvable:
             ctx.message.channel.send("I am not smart enough for that.")
         else:
-            game = GameBoard(xdistance, ydistance, bombs)
+            game = GameBoard(x_distance, y_distance, bombs)
             game.buttons[0][0].left_click()
             await ctx.message.channel.send(game.to_covered_message())
 
     @minesweeper_group.command(name="new-game", help="Starts a game.")
-    async def NewGame(
-        self, ctx, bombs: int = 10, xdistance: int = 8, ydistance: int = 8
-    ):
-        self.games[str(ctx.message.author)] = GameBoard(xdistance, ydistance, bombs)
-        await ctx.message.channel.send(self.games[str(ctx.message.author)].toMessage())
+    async def new_game(
+        self,
+        ctx: commands.Context,
+        bombs: int = 10,
+        x_distance: int = 8,
+        y_distance: int = 8,
+    ) -> None:
+        """Make new game."""  # what did you think?
+        self.games[str(ctx.message.author)] = GameBoard(x_distance, y_distance, bombs)
+        await ctx.message.channel.send(self.games[str(ctx.message.author)].to_message())
 
     @minesweeper_group.command(name="click", help="Click a square.")
-    async def Click(self, ctx, xPosition: int, yPosition: int):
-        # if (xPosition): pass
-        xPosition -= 1
-        yPosition -= 1
-        print(f"click at: {xPosition}, {yPosition}")
+    async def click(
+        self, ctx: commands.Context, x_position: int, y_position: int
+    ) -> None:
+        """Click a square."""
+        x_position -= 1
+        y_position -= 1
+        log.trace(f"click at: {x_position}, {y_position}")
         if str(ctx.message.author) not in self.games:
             # say something
             await ctx.message.channel.send("you don't have a game.")
@@ -263,52 +259,45 @@ class Minesweeper(commands.Cog):
         await ctx.message.add_reaction("🧼")
         await ctx.message.add_reaction("🚫")
         try:
-            reaction, user = await self.bot.wait_for(
+            reaction, _ = await self.bot.wait_for(
                 "reaction_add",
                 timeout=600.0,
-                check=lambda r, u: self.check(ctx.message.author, ctx.message, r, u),
+                check=lambda r, u: r.message == ctx.message
+                and u == ctx.message.author
+                and str(r.emoji) in {"⛏️", "❓", "🚩", "🧼", "🚫"},
             )
         except asyncio.TimeoutError:
             await ctx.message.channel.send("game timed out")
             del self.games[str(ctx.message.author)]
         else:
-            print(f"got reaction: {reaction.emoji}")
-            print(str(reaction.emoji))
+            log.trace(f"got reaction: {reaction.emoji}")
             if str(reaction.emoji) == "⛏️":
-                self.games[str(ctx.message.author)].buttons[xPosition][
-                    yPosition
+                self.games[str(ctx.message.author)].buttons[x_position][
+                    y_position
                 ].left_click()
-                print("digging")
+                log.trace("digging")
                 if self.games[str(ctx.message.author)].gameover:
                     await ctx.message.channel.send("Game over. who knows why?")
                     await ctx.message.channel.send(
-                        self.games[str(ctx.message.author)].toMessage()
+                        self.games[str(ctx.message.author)].to_message()
                     )
                     del self.games[str(ctx.message.author)]
             elif str(reaction) == "❓":
-                self.games[str(ctx.message.author)].buttons[xPosition][
-                    yPosition
-                ].Rclick(2)
+                self.games[str(ctx.message.author)].buttons[x_position][
+                    y_position
+                ].right_click(2)
             elif str(reaction) == "🚩":
-                self.games[str(ctx.message.author)].buttons[xPosition][
-                    yPosition
-                ].Rclick(1)
+                self.games[str(ctx.message.author)].buttons[x_position][
+                    y_position
+                ].right_click(1)
             elif str(reaction) == "🧼":
-                self.games[str(ctx.message.author)].buttons[xPosition][
-                    yPosition
-                ].Rclick(0)
+                self.games[str(ctx.message.author)].buttons[x_position][
+                    y_position
+                ].right_click(0)
 
             await ctx.message.channel.send(
-                self.games[str(ctx.message.author)].toMessage()
+                self.games[str(ctx.message.author)].to_message()
             )
-
-    @staticmethod
-    def check(player, message, reaction, user):
-        return (
-            reaction.message == message
-            and user == player
-            and str(reaction.emoji) in {"⛏️", "❓", "🚩", "🧼", "🚫"}
-        )
 
 
 def setup(bot: commands.Bot) -> None:
