@@ -223,13 +223,13 @@ class Minesweeper(commands.Cog):
     ) -> None:
         """Send a spoilers minesweeper board."""
         if solvable:
-            ctx.message.channel.send("I am not smart enough for that.")
+            ctx.send("I am not smart enough for that.")
         else:
             game = GameBoard(x_distance, y_distance, bombs)
             game.buttons[0][0].left_click()
-            await ctx.message.channel.send(game.to_covered_message())
+            await ctx.send(game.to_covered_message())
 
-    @minesweeper_group.command(name="new-game", help="Starts a game.")
+    @minesweeper_group.command(name="new-game")
     async def new_game(
         self,
         ctx: commands.Context,
@@ -239,19 +239,19 @@ class Minesweeper(commands.Cog):
     ) -> None:
         """Make new game."""  # what did you think?
         self.games[str(ctx.message.author)] = GameBoard(x_distance, y_distance, bombs)
-        await ctx.message.channel.send(self.games[str(ctx.message.author)].to_message())
+        await ctx.send(self.games[str(ctx.message.author)].to_message())
 
-    @minesweeper_group.command(name="click", help="Click a square.")
+    @minesweeper_group.command(name="click")
     async def click(
         self, ctx: commands.Context, x_position: int, y_position: int
     ) -> None:
         """Click a square."""
+        log.trace(f"click at: {x_position}, {y_position}")
         x_position -= 1
         y_position -= 1
-        log.trace(f"click at: {x_position}, {y_position}")
         if str(ctx.message.author) not in self.games:
             # say something
-            await ctx.message.channel.send("you don't have a game.")
+            await ctx.send("you don't have a game.")
             return
         await ctx.message.add_reaction("⛏️")
         await ctx.message.add_reaction("❓")
@@ -261,27 +261,26 @@ class Minesweeper(commands.Cog):
         try:
             reaction, _ = await self.bot.wait_for(
                 "reaction_add",
-                timeout=600.0,
+                timeout=120.0,
                 check=lambda r, u: r.message == ctx.message
                 and u == ctx.message.author
                 and str(r.emoji) in {"⛏️", "❓", "🚩", "🧼", "🚫"},
             )
         except asyncio.TimeoutError:
-            await ctx.message.channel.send("game timed out")
+            await ctx.send("Game timed out")
             del self.games[str(ctx.message.author)]
         else:
-            log.trace(f"got reaction: {reaction.emoji}")
+            log.trace(f"Got reaction: {reaction.emoji}")
             if str(reaction.emoji) == "⛏️":
                 self.games[str(ctx.message.author)].buttons[x_position][
                     y_position
                 ].left_click()
-                log.trace("digging")
+                log.trace("Digging")
                 if self.games[str(ctx.message.author)].gameover:
-                    await ctx.message.channel.send("Game over. who knows why?")
-                    await ctx.message.channel.send(
-                        self.games[str(ctx.message.author)].to_message()
-                    )
+                    await ctx.send("Game over. who knows why?")
+                    await ctx.send(self.games[str(ctx.message.author)].to_message())
                     del self.games[str(ctx.message.author)]
+                    return
             elif str(reaction) == "❓":
                 self.games[str(ctx.message.author)].buttons[x_position][
                     y_position
@@ -295,11 +294,9 @@ class Minesweeper(commands.Cog):
                     y_position
                 ].right_click(0)
 
-            await ctx.message.channel.send(
-                self.games[str(ctx.message.author)].to_message()
-            )
+            await ctx.send(self.games[str(ctx.message.author)].to_message())
 
 
 def setup(bot: commands.Bot) -> None:
-    """Add the status cog."""
+    """Add the Minesweeper cog."""
     bot.add_cog(Minesweeper(bot))
