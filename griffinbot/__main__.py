@@ -45,8 +45,18 @@ async def on_ready() -> None:
     """Message that the bot is ready."""
     log.info(f"Logged in as {bot.user}")
 
+    log.trace(f"Time: {datetime.now()}")
     channel = bot.get_channel(constants.Channels.bot_log)
-    await channel.send(f"{constants.Emoji.green_check} Connected!")
+    embed = discord.Embed(
+        description="Connected!",
+        timestamp=datetime.now().astimezone(),
+        color=discord.Colour.green(),
+    ).set_author(
+        name=bot.user.display_name,
+        url="https://github.com/NinoMaruszewski/griffinbot/",
+        icon_url=bot.user.avatar_url_as(format="png"),
+    )
+    await channel.send(embed=embed)
 
 
 # Load cogs
@@ -54,13 +64,19 @@ for file in os.listdir(os.path.join(".", "griffinbot", "exts")):
     if file.endswith(".py") and not file.startswith("_"):
         bot.load_extension(f"griffinbot.exts.{file[:-3]}")
 
+# Log if debug mode is on
+log.info(f"Debug: {constants.DEBUG_MODE}")
+log.trace(f"Debug env variable: {os.environ['DEBUG']}")
 
-@bot.command()
+
+@commands.has_any_role(*constants.BOT_ADMINS)
+@bot.command(aliases=("r",))
 async def reload(ctx: commands.Context, cog: str) -> None:
     """Reload a cog."""
     try:
-        bot.unload_extension(cog)
-        bot.load_extension(cog)
+        bot.reload_extension(cog) if "griffinbot" in cog else bot.reload_extension(
+            f"griffinbot.exts.{cog}"
+        )
     except commands.ExtensionNotLoaded:
         await ctx.send(f"Could not find the extension `{cog}`!")
     else:

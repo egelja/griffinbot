@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from distutils.util import strtobool
 from pathlib import Path
 
 log = logging.getLogger(__name__)
@@ -85,7 +86,10 @@ class JSONGetter(type):
 
 
 # Environment constants
-DEBUG_MODE = True if os.environ["DEBUG"] is not None else False
+try:
+    DEBUG_MODE = strtobool(os.environ["DEBUG"])
+except ValueError:
+    DEBUG_MODE = False
 
 
 # JSON constants
@@ -132,4 +136,5 @@ class Emoji(metaclass=JSONGetter):
 
 
 # Groups
+BOT_ADMINS = [StaffRoles.bot_team_role, StaffRoles.admin_role]
 MOD_ROLES = [StaffRoles.mod_role, StaffRoles.admin_role]
