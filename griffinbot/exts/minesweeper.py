@@ -55,6 +55,7 @@ class GameBoard:
         self.bombs = num_bombs
         self.gameover = False
         self.updated = datetime.now()
+        self.dimensions = (x_bombs, y_bombs, num_bombs)
 
         self.buttons = []
         for x_coord in range(x_bombs):
@@ -293,6 +294,14 @@ class Minesweeper(commands.Cog):
             await ctx.send(f"{Emoji.no} I am not smart enough for that.")
             return
 
+        # ========
+        #  Checks
+        # ========
+        if x_distance <= 0:
+            x_distance = 1
+        if y_distance <= 0:
+            y_distance = 1
+
         area = x_distance * y_distance
         # Keep people from making more bombs than possible
         if bombs >= area:
@@ -302,6 +311,9 @@ class Minesweeper(commands.Cog):
         if (x_distance != 8 or y_distance != 8) and bombs == 10:
             bombs = round(area * (10 / 64))
 
+        # ============
+        #  Start game
+        # ============
         game = GameBoard(x_distance, y_distance, bombs)
         game.buttons[0][0].left_click()
         if area <= 196:
@@ -353,14 +365,27 @@ class Minesweeper(commands.Cog):
         to keep the same difficulty of the Minesweeper game.
         """
         log.info(f"{ctx.author} started a new Minesweeper game")
+
+        # ========
+        #  Checks
+        # ========
+        if x_distance <= 0:
+            x_distance = 1
+        if y_distance <= 0:
+            y_distance = 1
+
         # Keep people from making more bombs than possible
         area = x_distance * y_distance
         if bombs >= area:
             bombs = area - 1
 
+        # Scale difficulty
         if (x_distance != 8 or y_distance != 8) and bombs == 10:
             bombs = round(area * (10 / 64))
 
+        # ============
+        #  Start game
+        # ============
         log.trace(f"X: {x_distance}, Y; {y_distance}, Bombs: {bombs}")
         game = GameBoard(x_distance, y_distance, bombs)
         if area <= 170:
@@ -391,7 +416,7 @@ class Minesweeper(commands.Cog):
         await ctx.send(f"{Emoji.ok} Successfully quit Minesweeper game.")
 
     @minesweeper_group.command(name="click", aliases=("c",))
-    async def click(
+    async def click(  # noqa: C901
         self, ctx: commands.Context, x_position: int, y_position: int
     ) -> None:
         """Click a square.
@@ -419,6 +444,21 @@ class Minesweeper(commands.Cog):
 
         # Update the game to keep it from going stale
         self._games[str(ctx.message.author)].update()
+
+        # ========
+        #  Checks
+        # ========
+        x_max, y_max, _ = self._games[str(ctx.message.author)].dimensions
+        if (
+            x_position <= 0
+            or x_position > x_max
+            or y_position <= 0
+            or y_position > y_max
+        ):
+            await ctx.send(
+                f"{Emoji.warning} Make sure your click position fits "
+                + "within the game board."
+            )
 
         # Add click reactions
         await ctx.message.add_reaction("⛏️")
