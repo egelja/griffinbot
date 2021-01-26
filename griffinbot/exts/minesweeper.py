@@ -90,7 +90,7 @@ class GameBoard:
         if (datetime.now() - self.updated).total_seconds() > 120:
             log.trace("Stale")
             return True
-        log.trace("Not stale.")
+        log.trace("Not stale")
         return False
 
     def update(self) -> None:
@@ -271,7 +271,7 @@ class Minesweeper(commands.Cog):
                 embed=discord.Embed(
                     title="Spoilers Minesweeper",
                     description=game.to_covered_message(),
-                    color=discord.Color.green(),
+                    color=discord.Color.gold(),
                     timestamp=datetime.now().astimezone(),
                 ),
             )
@@ -285,17 +285,24 @@ class Minesweeper(commands.Cog):
         y_distance: int = 8,
     ) -> None:
         """Make new game."""
-        log.info(f"{ctx.author} started a new game.")
+        log.info(f"{ctx.author} started a new Minesweeper game")
         game = GameBoard(x_distance, y_distance, bombs)
         self._games[str(ctx.message.author)] = game
         await ctx.send(
             embed=discord.Embed(
                 title="Minesweeper",
                 description=game.to_message(),
-                color=discord.Color.green(),
+                color=discord.Color.gold(),
                 timestamp=datetime.now().astimezone(),
             ),
         )
+
+    @minesweeper_group.command(name="quit-game", aliases=("quit", "q"))
+    async def quit_game(self, ctx: commands.Context) -> None:
+        """Quit a Minesweeper game."""
+        del self._games[str(ctx.message.author)]
+        log.info(f"{ctx.author} quit their Minesweeper game")
+        await ctx.send(f"{Emoji.ok} Successfully quit Minesweeper game.")
 
     @minesweeper_group.command(name="click", aliases=("c",))
     async def click(
@@ -352,17 +359,30 @@ class Minesweeper(commands.Cog):
             if str(reaction.emoji) == "⛏️":
                 game.buttons[x_position][y_position].left_click()
                 log.trace("Digging")
-                if self._games[str(ctx.message.author)].gameover:
-                    await ctx.send(":pensive: Game over.")
-                    await ctx.send(
-                        embed=discord.Embed(
-                            title="Minesweeper",
-                            description=game.to_message(),
-                            color=discord.Color.red(),
-                            timestamp=datetime.now().astimezone(),
-                        ),
-                    )
-                    del game
+                if game.gameover:
+                    if game.cleared():
+                        await ctx.send(":tada: You won!")
+                        await ctx.send(
+                            embed=discord.Embed(
+                                title="Minesweeper",
+                                description=game.to_message(),
+                                color=discord.Color.green(),
+                                timestamp=datetime.now().astimezone(),
+                            ),
+                        )
+                    else:
+                        await ctx.send(":pensive: Game over.")
+                        await ctx.send(
+                            embed=discord.Embed(
+                                title="Minesweeper",
+                                description=game.to_message(),
+                                color=discord.Color.red(),
+                                timestamp=datetime.now().astimezone(),
+                            ),
+                        )
+
+                    # Clean up
+                    del self._games[str(ctx.message.author)]
                     return
             elif str(reaction) == "❓":
                 game.buttons[x_position][y_position].right_click(2)
@@ -375,7 +395,7 @@ class Minesweeper(commands.Cog):
                 embed=discord.Embed(
                     title="Minesweeper",
                     description=game.to_message(),
-                    color=discord.Color.green(),
+                    color=discord.Color.gold(),
                     timestamp=datetime.now().astimezone(),
                 ),
             )
