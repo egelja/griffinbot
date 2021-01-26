@@ -17,18 +17,18 @@ def num_to_emoji(x: int) -> str:
     """Convet int to emoji."""
     if x <= 20:
         return {
-            -1: ":bomb:",
-            0: ":blue_square:",
-            1: ":one:",
-            2: ":two:",
-            3: ":three:",
-            4: ":four:",
-            5: ":five:",
-            6: ":six:",
-            7: ":seven:",
-            8: ":eight:",
-            9: ":nine:",
-            10: "<:10:803629457142972436>",
+            -1: "💣",
+            0: "🟦",
+            1: "1️⃣",
+            2: "2️⃣",
+            3: "3️⃣",
+            4: "4️⃣",
+            5: "5️⃣",
+            6: "6️⃣",
+            7: "7️⃣",
+            8: "8️⃣",
+            9: "9️⃣",
+            10: "🔟",
             11: "<:11:803632726509879346>",
             12: "<:12:803633006790049806>",
             13: "<:13:803633045742682173>",
@@ -221,18 +221,18 @@ class Tile:
                 elif self.tile_image_state == 1:
                     return ":flag_black:"
                 return {
-                    0: ":white_large_square:",
-                    1: ":triangular_flag_on_post:",
-                    2: ":question:",
+                    0: "⬜",
+                    1: "🚩",
+                    2: "❓",
                 }[self.tile_image_state]
             else:
                 return num_to_emoji(self.reveal_image_state)
         else:
             if self.covered:
                 return {
-                    0: ":white_large_square:",
-                    1: ":triangular_flag_on_post:",
-                    2: ":question:",
+                    0: "⬜",
+                    1: "🚩",
+                    2: "❓",
                 }[self.tile_image_state]
             else:
                 return num_to_emoji(self.reveal_image_state)
@@ -274,17 +274,33 @@ class Minesweeper(commands.Cog):
     async def spoilers_game(
         self,
         ctx: commands.Context,
-        bombs: int = 10,
         x_distance: int = 8,
         y_distance: int = 8,
+        bombs: int = 10,
         solvable: bool = False,
     ) -> None:
-        """Send a spoilers minesweeper board."""
+        """Send a spoilers minesweeper board.
+
+        If x- or y-distance are changed, but not bombs, bombs will be scaled
+        to keep the same difficulty of the Minesweeper game.
+        """
         if solvable:
-            ctx.send(f"{Emoji.no} I am not smart enough for that.")
-        else:
-            game = GameBoard(x_distance, y_distance, bombs)
-            game.buttons[0][0].left_click()
+            await ctx.send(f"{Emoji.no} I am not smart enough for that.")
+            return
+
+        area = x_distance * y_distance
+        # Keep people from making more bombs than possible
+        if bombs >= area:
+            bombs = area - 1
+
+        # Scale difficulty
+        if (x_distance != 8 or y_distance != 8) and bombs == 10:
+            bombs = round(area * (10 / 64))
+
+        game = GameBoard(x_distance, y_distance, bombs)
+        game.buttons[0][0].left_click()
+        if area <= 196:
+            log.trace(f"Message area: {area}")
             await ctx.send(
                 embed=discord.Embed(
                     title="Spoilers Minesweeper",
@@ -292,6 +308,11 @@ class Minesweeper(commands.Cog):
                     color=discord.Color.gold(),
                     timestamp=datetime.now().astimezone(),
                 ),
+            )
+        else:
+            await ctx.send(
+                f"{Emoji.warning} That Minesweeper game is too big. "
+                + "Please try smaller dimensions."
             )
 
     @minesweeper_group.command(name="new-game", aliases=("n-g", "ng"))
@@ -309,22 +330,22 @@ class Minesweeper(commands.Cog):
         """
         log.info(f"{ctx.author} started a new Minesweeper game")
         # Keep people from making more bombs than possible
-        if bombs >= x_distance * y_distance:
-            bombs = x_distance * y_distance - 1
+        area = x_distance * y_distance
+        if bombs >= area:
+            bombs = area - 1
 
         if (x_distance != 8 or y_distance != 8) and bombs == 10:
-            bombs = round((x_distance * y_distance) * (10 / 64))
+            bombs = round(area * (10 / 64))
 
         log.trace(f"X: {x_distance}, Y; {y_distance}, Bombs: {bombs}")
         game = GameBoard(x_distance, y_distance, bombs)
-        if len(message := game.to_message()) <= 2048:
-            log.trace(f"Message length: {len(message)}")
-            # log.trace(f"Message: {message}")
+        if area <= 170:
+            log.trace(f"Message area: {area}")
             self._games[str(ctx.message.author)] = game
             await ctx.send(
                 embed=discord.Embed(
                     title="Minesweeper",
-                    description=message,
+                    description=game.to_message(),
                     color=discord.Color.gold(),
                     timestamp=datetime.now().astimezone(),
                 ),
