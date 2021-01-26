@@ -5,6 +5,7 @@ import logging
 from datetime import datetime
 from random import sample
 
+import discord
 from discord.ext import commands, tasks
 
 from griffinbot.constants import Bot, Emoji
@@ -251,7 +252,7 @@ class Minesweeper(commands.Cog):
         """Commands for playing minesweeper."""
         await ctx.send_help(ctx.command)
 
-    @minesweeper_group.command(name="spoilers-game")
+    @minesweeper_group.command(name="spoilers-game", aliases=("s-g", "sg"))
     async def spoilers_game(
         self,
         ctx: commands.Context,
@@ -266,9 +267,16 @@ class Minesweeper(commands.Cog):
         else:
             game = GameBoard(x_distance, y_distance, bombs)
             game.buttons[0][0].left_click()
-            await ctx.send(game.to_covered_message())
+            await ctx.send(
+                embed=discord.Embed(
+                    title="Spoilers Minesweeper",
+                    description=game.to_covered_message(),
+                    color=discord.Color.green(),
+                    timestamp=datetime.now().astimezone(),
+                ),
+            )
 
-    @minesweeper_group.command(name="new-game")
+    @minesweeper_group.command(name="new-game", aliases=("n-g", "ng"))
     async def new_game(
         self,
         ctx: commands.Context,
@@ -280,9 +288,16 @@ class Minesweeper(commands.Cog):
         log.info(f"{ctx.author} started a new game.")
         game = GameBoard(x_distance, y_distance, bombs)
         self._games[str(ctx.message.author)] = game
-        await ctx.send(game.to_message())
+        await ctx.send(
+            embed=discord.Embed(
+                title="Minesweeper",
+                description=game.to_message(),
+                color=discord.Color.green(),
+                timestamp=datetime.now().astimezone(),
+            ),
+        )
 
-    @minesweeper_group.command(name="click")
+    @minesweeper_group.command(name="click", aliases=("c",))
     async def click(
         self, ctx: commands.Context, x_position: int, y_position: int
     ) -> None:
@@ -296,12 +311,15 @@ class Minesweeper(commands.Cog):
             - 🚫 means to cancel clicking
         """
         log.trace(f"Click at: {x_position}, {y_position}")
-        x_position -= 1
-        y_position -= 1
+        # These have to be switched...
+        x_temp = x_position
+        x_position = y_position - 1
+        y_position = x_temp - 1
+
         if str(ctx.message.author) not in self._games:
             # say something
             await ctx.send(
-                f"{Emoji.no} You don't have a game, or your previous game went stale."
+                f"{Emoji.no} You don't have a game, or your previous game went stale. "
                 + f"Run `{Bot.prefix}ms new-game` to start a new game."
             )
             return
@@ -336,7 +354,14 @@ class Minesweeper(commands.Cog):
                 log.trace("Digging")
                 if self._games[str(ctx.message.author)].gameover:
                     await ctx.send(":pensive: Game over.")
-                    await ctx.send(game.to_message())
+                    await ctx.send(
+                        embed=discord.Embed(
+                            title="Minesweeper",
+                            description=game.to_message(),
+                            color=discord.Color.red(),
+                            timestamp=datetime.now().astimezone(),
+                        ),
+                    )
                     del game
                     return
             elif str(reaction) == "❓":
@@ -346,7 +371,14 @@ class Minesweeper(commands.Cog):
             elif str(reaction) == "🧼":
                 game.buttons[x_position][y_position].right_click(0)
 
-            await ctx.send(game.to_message())
+            await ctx.send(
+                embed=discord.Embed(
+                    title="Minesweeper",
+                    description=game.to_message(),
+                    color=discord.Color.green(),
+                    timestamp=datetime.now().astimezone(),
+                ),
+            )
 
 
 def setup(bot: commands.Bot) -> None:
