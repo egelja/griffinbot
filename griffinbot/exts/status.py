@@ -72,7 +72,7 @@ class Status(commands.Cog):
         ).set_author(
             name=self.bot.user.display_name,
             url="https://github.com/NinoMaruszewski/griffinbot/",
-            icon_url=self.bot.user.avatar_url_as(format="png"),
+            icon_url=self.bot.user.avatar_url_as(static_format="png"),
         )
         await bot_log_channel.send(embed=embed)
 
