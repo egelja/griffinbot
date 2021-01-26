@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import typing as t
 from datetime import datetime
 from random import sample
 
@@ -274,6 +275,7 @@ class Minesweeper(commands.Cog):
     async def spoilers_game(
         self,
         ctx: commands.Context,
+        dm: t.Optional[bool] = False,
         x_distance: int = 8,
         y_distance: int = 8,
         bombs: int = 10,
@@ -283,6 +285,9 @@ class Minesweeper(commands.Cog):
 
         If x- or y-distance are changed, but not bombs, bombs will be scaled
         to keep the same difficulty of the Minesweeper game.
+
+        If you want to play a DM game with one row, you have to include the `dm`
+        parameter in the bot command.
         """
         if solvable:
             await ctx.send(f"{Emoji.no} I am not smart enough for that.")
@@ -301,19 +306,38 @@ class Minesweeper(commands.Cog):
         game.buttons[0][0].left_click()
         if area <= 196:
             log.trace(f"Message area: {area}")
-            await ctx.send(
-                embed=discord.Embed(
-                    title="Spoilers Minesweeper",
-                    description=game.to_covered_message(),
-                    color=discord.Color.gold(),
-                    timestamp=datetime.now().astimezone(),
-                ),
-            )
+            if not dm:
+                await ctx.send(
+                    embed=discord.Embed(
+                        title="Spoilers Minesweeper",
+                        description=game.to_covered_message(),
+                        color=discord.Color.gold(),
+                        timestamp=datetime.now().astimezone(),
+                    ).set_author(
+                        name=ctx.author.name,
+                        icon_url=ctx.author.avatar_url_as(static_format="png"),
+                    ),
+                )
+            else:
+                await ctx.author.send(
+                    embed=discord.Embed(
+                        title="Spoilers Minesweeper",
+                        description=game.to_covered_message(),
+                        color=discord.Color.gold(),
+                        timestamp=datetime.now().astimezone(),
+                    )
+                )
         else:
-            await ctx.send(
-                f"{Emoji.warning} That Minesweeper game is too big. "
-                + "Please try smaller dimensions."
-            )
+            if not dm:
+                await ctx.send(
+                    f"{Emoji.warning} That Minesweeper game is too big. "
+                    + "Please try smaller dimensions."
+                )
+            else:
+                await ctx.author.send(
+                    f"{Emoji.warning} That Minesweeper game is too big. "
+                    + "Please try smaller dimensions."
+                )
 
     @minesweeper_group.command(name="new-game", aliases=("n-g", "ng"))
     async def new_game(
@@ -348,6 +372,9 @@ class Minesweeper(commands.Cog):
                     description=game.to_message(),
                     color=discord.Color.gold(),
                     timestamp=datetime.now().astimezone(),
+                ).set_author(
+                    name=ctx.author.name,
+                    icon_url=ctx.author.avatar_url_as(static_format="png"),
                 ),
             )
         else:
@@ -427,6 +454,9 @@ class Minesweeper(commands.Cog):
                                 description=game.to_message(),
                                 color=discord.Color.green(),
                                 timestamp=datetime.now().astimezone(),
+                            ).set_author(
+                                name=ctx.author.name,
+                                icon_url=ctx.author.avatar_url_as(static_format="png"),
                             ),
                         )
                     else:
@@ -437,6 +467,9 @@ class Minesweeper(commands.Cog):
                                 description=game.to_message(),
                                 color=discord.Color.red(),
                                 timestamp=datetime.now().astimezone(),
+                            ).set_author(
+                                name=ctx.author.name,
+                                icon_url=ctx.author.avatar_url_as(static_format="png"),
                             ),
                         )
 
@@ -456,6 +489,9 @@ class Minesweeper(commands.Cog):
                     description=game.to_message(),
                     color=discord.Color.gold(),
                     timestamp=datetime.now().astimezone(),
+                ).set_author(
+                    name=ctx.author.name,
+                    icon_url=ctx.author.avatar_url_as(static_format="png"),
                 ),
             )
 
