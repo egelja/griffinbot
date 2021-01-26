@@ -58,9 +58,9 @@ class GameBoard:
         self.dimensions = (x_bombs, y_bombs, num_bombs)
 
         self.buttons = []
-        for x_coord in range(x_bombs):
+        for y_coord in range(y_bombs):
             row = []
-            for y_coord in range(y_bombs):
+            for x_coord in range(x_bombs):
                 row.append(Tile(self, x_coord, y_coord))
             self.buttons.append(row)
 
@@ -74,11 +74,11 @@ class GameBoard:
         for bomb_number in bomb_numbers:
             bomb_x = bomb_number % self.x_bombs
             bomb_y = bomb_number // self.x_bombs
-            self.buttons[bomb_x][bomb_y].bomb()
+            self.buttons[bomb_y][bomb_x].bomb()
             self.bombPositions.append((bomb_x, bomb_y))
 
         for bomb_x, bomb_y in self.bombPositions:
-            for tile in self.buttons[bomb_x][bomb_y].get_adjacent():
+            for tile in self.buttons[bomb_y][bomb_x].get_adjacent():
                 if not tile.isBomb:
                     tile.reveal_image_state += 1
 
@@ -150,6 +150,12 @@ class Tile:
         self.reveal_image_state = 0  # Shown when revealed: num bombs or -1 if bomb
         self.gameboard = gameboard
 
+    def __str__(self):
+        return f"{'Tile' if not self.isBomb else 'Bomb'} at ({self.x}, {self.y})"
+
+    def __repr__(self):
+        return self.__str__()
+
     def left_click(self) -> None:
         """Simulate a left click by the user."""
         if self.gameboard.gameover:
@@ -169,7 +175,7 @@ class Tile:
             self.reveal()
 
         if self.gameboard.cleared():
-            self.gameboard.gameover = True
+            self.gameboard.game_over()
 
     def reveal(self) -> None:
         """Reveal the tile."""
@@ -211,7 +217,7 @@ class Tile:
                 or y_pos < 0
                 or y_pos >= self.gameboard.y_bombs
             ):
-                adjacent.append(self.gameboard.buttons[x_pos][y_pos])
+                adjacent.append(self.gameboard.buttons[y_pos][x_pos])
         return adjacent
 
     def to_emoji(self) -> str:
@@ -411,9 +417,29 @@ class Minesweeper(commands.Cog):
     @minesweeper_group.command(name="quit-game", aliases=("quit", "q"))
     async def quit_game(self, ctx: commands.Context) -> None:
         """Quit a Minesweeper game."""
+        game = self._games[str(ctx.message.author)]
+        if not game.started:
+            game.buttons[0][0].left_click()
+
+        for row in game.buttons:
+            for tile in row:
+                tile.reveal()
+
+        await ctx.send(f"{Emoji.ok} Successfully quit Minesweeper game.")
+        await ctx.send(
+            embed=discord.Embed(
+                title="Minesweeper",
+                description=game.to_message(),
+                color=discord.Color.red(),
+                timestamp=datetime.now().astimezone(),
+            ).set_author(
+                name=ctx.author.name,
+                icon_url=ctx.author.avatar_url_as(static_format="png"),
+            ),
+        )
+
         del self._games[str(ctx.message.author)]
         log.info(f"{ctx.author} quit their Minesweeper game")
-        await ctx.send(f"{Emoji.ok} Successfully quit Minesweeper game.")
 
     @minesweeper_group.command(name="click", aliases=("c",))
     async def click(  # noqa: C901
@@ -429,10 +455,6 @@ class Minesweeper(commands.Cog):
             - 🚫 means to cancel clicking
         """
         log.trace(f"Click at: {x_position}, {y_position}")
-        # These have to be switched...
-        x_temp = x_position
-        x_position = y_position - 1
-        y_position = x_temp - 1
 
         if str(ctx.message.author) not in self._games:
             # say something
@@ -459,6 +481,11 @@ class Minesweeper(commands.Cog):
                 f"{Emoji.warning} Make sure your click position fits "
                 + "within the game board."
             )
+            return
+
+        # Subtract for arrays
+        x_position -= 1
+        y_position -= 1
 
         # Add click reactions
         await ctx.message.add_reaction("⛏️")
@@ -483,8 +510,12 @@ class Minesweeper(commands.Cog):
 
             log.trace(f"Got reaction: {reaction.emoji}")
             if str(reaction.emoji) == "⛏️":
-                game.buttons[x_position][y_position].left_click()
+                log.trace(f"Position: ({x_position}, {y_position})")
+                log.trace(f"Buttons: {game.buttons}")
                 log.trace("Digging")
+
+                game.buttons[y_position][x_position].left_click()
+
                 if game.gameover:
                     if game.cleared():
                         await ctx.send(":tada: You won!")
@@ -517,11 +548,11 @@ class Minesweeper(commands.Cog):
                     del self._games[str(ctx.message.author)]
                     return
             elif str(reaction) == "❓":
-                game.buttons[x_position][y_position].right_click(2)
+                game.buttons[y_position][x_position].right_click(2)
             elif str(reaction) == "🚩":
-                game.buttons[x_position][y_position].right_click(1)
+                game.buttons[y_position][x_position].right_click(1)
             elif str(reaction) == "🧼":
-                game.buttons[x_position][y_position].right_click(0)
+                game.buttons[y_position][x_position].right_click(0)
 
             await ctx.send(
                 embed=discord.Embed(
