@@ -9,7 +9,7 @@ from random import sample
 import discord
 from discord.ext import commands, tasks
 
-from griffinbot.constants import Bot, Emoji
+from griffinbot.constants import Bot, Emoji, MOD_ROLES, StaffRoles
 
 log = logging.getLogger(__name__)
 
@@ -63,6 +63,15 @@ class GameBoard:
             for x_coord in range(x_bombs):
                 row.append(Tile(self, x_coord, y_coord))
             self.buttons.append(row)
+
+    def __str__(self):
+        return (
+            f"{self.x_bombs} by {self.y_bombs} Minesweeper game, "
+            + f"last updated {self.updated.strftime('%I:%M:%S %p on %m/%d/%Y')}"
+        )
+
+    def __repr__(self):
+        return str(self)
 
     def start(self, x: int, y: int) -> None:
         """Start a new minesweeper game."""
@@ -154,7 +163,7 @@ class Tile:
         return f"{'Tile' if not self.isBomb else 'Bomb'} at ({self.x}, {self.y})"
 
     def __repr__(self):
-        return self.__str__()
+        return str(self)
 
     def left_click(self) -> None:
         """Simulate a left click by the user."""
@@ -271,12 +280,30 @@ class Minesweeper(commands.Cog):
         for game_id in stale_games:
             del self._games[game_id]
 
-        log.info(f"{len(stale_games)} stale Minesweeper games removed")
+        stale = len(stale_games)
+        log.info(
+            f"{stale} stale Minesweeper game{'s' if stale != 1 else ''} removed"
+        )
 
     @commands.group(invoke_without_command=True, name="minesweeper", aliases=("ms",))
     async def minesweeper_group(self, ctx: commands.Context) -> None:
         """Commands for playing minesweeper."""
         await ctx.send_help(ctx.command)
+
+    @commands.has_any_role(*MOD_ROLES, StaffRoles.bot_team_role)
+    @minesweeper_group.command(name="list-games", aliases=("list", "ls", "l"))
+    async def list_games(self, ctx: commands.Context) -> None:
+        """List all the games currently being played."""
+        await ctx.send(
+            f"{len(self._games)} Game{'s' if len(self._games) != 1 else ''}:"
+        )
+
+        message = ""
+        for user, game in self._games.items():
+            message += f"- `{user}`: {game}\n"
+
+        if message:
+            await ctx.send(message)
 
     @minesweeper_group.command(name="spoilers-game", aliases=("s-g", "sg"))
     async def spoilers_game(
@@ -357,7 +384,7 @@ class Minesweeper(commands.Cog):
                     + "Please try smaller dimensions."
                 )
 
-    @minesweeper_group.command(name="new-game", aliases=("n-g", "ng"))
+    @minesweeper_group.command(name="new-game", aliases=("n-g", "ng", "n"))
     async def new_game(
         self,
         ctx: commands.Context,
