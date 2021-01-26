@@ -1,4 +1,5 @@
 # TODO
-1. Boilerplate
+
+1. ~~Boilerplate~~ DONE!
 2. Minesweeper
-3. ?????
+3. Counting

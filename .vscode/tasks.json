@@ -1,0 +1,10 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "pipenv launch",
+      "type": "shell",
+      "command": "pipenv run start"
+    }
+  ]
+}

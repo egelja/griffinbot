@@ -1,6 +1,7 @@
 <p align="center">
   <a href="https://github.com/NinoMaruszewski/griffinbot" rel="noopener">
- <img width=200px height=200px src="https://cdn.pixabay.com/photo/2019/02/25/00/54/griffin-4018762_960_720.png"></a>
+    <img width=200px height=200px src="https://cdn.pixabay.com/photo/2019/02/25/00/54/griffin-4018762_960_720.png">
+  </a>
 </p>
 
 <h3 align="center">Griffin Bot</h3>
@@ -15,10 +16,10 @@
 
 ---
 
-<p align="center"> A game bot for the Roycemore Discord server.
-    <br>
+<p align="center">
+  A game bot for the Roycemore Discord server.
+  <br>
 </p>
-
 
 ## Table of Contents
 
@@ -74,6 +75,7 @@ Linting:
 ```sh
 pipenv run lint
 ```
+
 ## Deployment <a name = "deployment"></a>
 
 You can use [PM2](https://pm2.keymetrics.io/) to deploy it. If you have a better solution, create an issue in the issue tracker.
