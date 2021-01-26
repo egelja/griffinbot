@@ -15,20 +15,30 @@ log = logging.getLogger(__name__)
 
 def num_to_emoji(x: int) -> str:
     """Convet int to emoji."""
-    if x < 11:
+    if x <= 20:
         return {
-            -1: "💣",
-            0: "🟦",
-            1: "1️⃣",
-            2: "2️⃣",
-            3: "3️⃣",
-            4: "4️⃣",
-            5: "5️⃣",
-            6: "6️⃣",
-            7: "7️⃣",
-            8: "8️⃣",
-            9: "9️⃣",
-            10: "<:bad_ten:798295802866040862>",
+            -1: ":bomb:",
+            0: ":blue_square:",
+            1: ":one:",
+            2: ":two:",
+            3: ":three:",
+            4: ":four:",
+            5: ":five:",
+            6: ":six:",
+            7: ":seven:",
+            8: ":eight:",
+            9: ":nine:",
+            10: "<:10:803629457142972436>",
+            11: "<:11:803632726509879346>",
+            12: "<:12:803633006790049806>",
+            13: "<:13:803633045742682173>",
+            14: "<:14:803633082330644492>",
+            15: "<:15:803633109945155664>",
+            16: "<:16:803633136763142175>",
+            17: "<:17:803633168640245790>",
+            18: "<:18:803633195106172958>",
+            19: "<:19:803633223913177089>",
+            20: "<:20:803633257358163968>",
         }[x]
     return f"{x}  "
 
@@ -210,12 +220,20 @@ class Tile:
                     return ":bomb:"
                 elif self.tile_image_state == 1:
                     return ":flag_black:"
-                return {0: "⬜", 1: "🚩", 2: "❓"}[self.tile_image_state]
+                return {
+                    0: ":white_large_square:",
+                    1: ":triangular_flag_on_post:",
+                    2: ":question:",
+                }[self.tile_image_state]
             else:
                 return num_to_emoji(self.reveal_image_state)
         else:
             if self.covered:
-                return {0: "⬜", 1: "🚩", 2: "❓"}[self.tile_image_state]
+                return {
+                    0: ":white_large_square:",
+                    1: ":triangular_flag_on_post:",
+                    2: ":question:",
+                }[self.tile_image_state]
             else:
                 return num_to_emoji(self.reveal_image_state)
 
@@ -280,22 +298,42 @@ class Minesweeper(commands.Cog):
     async def new_game(
         self,
         ctx: commands.Context,
-        bombs: int = 10,
         x_distance: int = 8,
         y_distance: int = 8,
+        bombs: int = 10,
     ) -> None:
-        """Make new game."""
+        """Make a new Minesweeper game.
+
+        If x- or y-distance are changed, but not bombs, bombs will be scaled
+        to keep the same difficulty of the Minesweeper game.
+        """
         log.info(f"{ctx.author} started a new Minesweeper game")
+        # Keep people from making more bombs than possible
+        if bombs >= x_distance * y_distance:
+            bombs = x_distance * y_distance - 1
+
+        if (x_distance != 8 or y_distance != 8) and bombs == 10:
+            bombs = round((x_distance * y_distance) * (10 / 64))
+
+        log.trace(f"X: {x_distance}, Y; {y_distance}, Bombs: {bombs}")
         game = GameBoard(x_distance, y_distance, bombs)
-        self._games[str(ctx.message.author)] = game
-        await ctx.send(
-            embed=discord.Embed(
-                title="Minesweeper",
-                description=game.to_message(),
-                color=discord.Color.gold(),
-                timestamp=datetime.now().astimezone(),
-            ),
-        )
+        if len(message := game.to_message()) <= 2048:
+            log.trace(f"Message length: {len(message)}")
+            # log.trace(f"Message: {message}")
+            self._games[str(ctx.message.author)] = game
+            await ctx.send(
+                embed=discord.Embed(
+                    title="Minesweeper",
+                    description=message,
+                    color=discord.Color.gold(),
+                    timestamp=datetime.now().astimezone(),
+                ),
+            )
+        else:
+            await ctx.send(
+                f"{Emoji.warning} That Minesweeper game is too big. "
+                + "Please try smaller dimensions."
+            )
 
     @minesweeper_group.command(name="quit-game", aliases=("quit", "q"))
     async def quit_game(self, ctx: commands.Context) -> None:
