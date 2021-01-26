@@ -137,6 +137,7 @@ class Tile:
             return
         else:  # all good
             self.reveal()
+
         if self.gameboard.cleared():
             self.gameboard.gameover = True
 
@@ -204,7 +205,6 @@ class Minesweeper(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        # discord.ext.commands.Bot.__init__(self, cmd_pre)
         self.games = {}
 
     @commands.group(invoke_without_command=True, name="minesweeper", aliases=("ms",))
@@ -237,7 +237,7 @@ class Minesweeper(commands.Cog):
         x_distance: int = 8,
         y_distance: int = 8,
     ) -> None:
-        """Make new game."""  # what did you think?
+        """Make new game.""" 
         self.games[str(ctx.message.author)] = GameBoard(x_distance, y_distance, bombs)
         await ctx.send(self.games[str(ctx.message.author)].to_message())
 
