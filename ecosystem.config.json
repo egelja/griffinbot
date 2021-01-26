@@ -1,0 +1,27 @@
+{
+  "apps": [
+    {
+      "name": "Griffinbot",
+      "script": "start.sh",
+
+      "watch": [
+        "./griffinbot/",
+        ".env",
+        "config.json",
+        "config-default.json",
+        "ecosystem.config.json"
+      ],
+      "watch_delay": 1000,
+      "ignore_watch": [".venv"],
+
+      "error_file": "./logs/err.log",
+      "out_file": "/dev/null",
+      "time": true,
+
+      "max_memory_restart": "300M",
+      "exp_backoff_restart_delay": 100,
+
+      "interpreter": "/bin/bash"
+    }
+  ]
+}
