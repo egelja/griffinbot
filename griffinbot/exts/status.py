@@ -65,7 +65,16 @@ class Status(commands.Cog):
         await asyncio.sleep(delay)
 
         bot_log_channel = self.bot.get_channel(Channels.bot_log)
-        await bot_log_channel.send(f"{Emoji.warning} Restarting!")
+        embed = Embed(
+            description="Restarting!",
+            timestamp=datetime.now().astimezone(),
+            color=Colour.gold(),
+        ).set_author(
+            name=self.bot.user.display_name,
+            url="https://github.com/NinoMaruszewski/griffinbot/",
+            icon_url=self.bot.user.avatar_url_as(format="png"),
+        )
+        await bot_log_channel.send(embed=embed)
 
         log.info(
             f"Restarting at the request of {ctx.message.author.name}#{ctx.message.author.discriminator}"  # noqa: B950
