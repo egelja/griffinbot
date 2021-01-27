@@ -349,7 +349,7 @@ class Minesweeper(commands.Cog):
         # ============
         game = GameBoard(x_distance, y_distance, bombs)
         game.buttons[0][0].left_click()
-        if area <= 196:
+        if area <= 99:
             log.trace(f"Message area: {area}")
             if not dm:
                 await ctx.send(
