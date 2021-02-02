@@ -1,5 +1,6 @@
 import logging
 import os
+import subprocess
 from datetime import datetime
 
 import discord
@@ -7,7 +8,7 @@ from discord.ext import commands
 
 from griffinbot import constants
 
-log = logging.getLogger(__name__)
+log = logging.getLogger("griffinbot.main")
 
 
 # Change the bot class to log adding/removing cogs:
@@ -81,6 +82,40 @@ async def reload(ctx: commands.Context, cog: str) -> None:
         await ctx.send(f"Could not find the extension `{cog}`!")
     else:
         await ctx.send(f"Cog `{cog}` successfully reloaded!")
+
+
+@commands.has_any_role(*constants.BOT_ADMINS)
+@bot.command(name="git-pull", aliases=("gitpull", "gp"))
+async def git_pull(ctx: commands.Context) -> None:
+    """Pull new changes."""
+    log.info(f"{ctx.author} ran a git pull")
+    try:
+        c = subprocess.run(
+            ["git", "pull"],
+            capture_output=True,
+            check=True,
+            encoding="utf-8",
+            timeout=60,
+        )
+    except (subprocess.TimeoutExpired, subprocess.SubprocessError, OSError) as e:
+        log.info(f"Command error! `{str(e)}`")
+        await ctx.send(
+            f"{constants.Emoji.warning} There was an error trying to execute that "
+            + f"command:\n```\n{str(e)}\n```"
+        )
+
+        # Print output if available
+        log.trace(f"Output: {e.stderr}")
+        if (
+            isinstance(e, (subprocess.TimeoutExpired, subprocess.SubprocessError))
+            and e.stderr
+        ):
+            await ctx.send(f"Command output:\n```\n{e.stderr}\n```")
+    else:
+        # Command worked
+        await ctx.send(f"{constants.Emoji.green_check} Command executed successfully.")
+        if c.stdout:
+            await ctx.send(f"Command output:\n```\n{c.stdout}\n```")
 
 
 bot.run(constants.Bot.bot_token)
