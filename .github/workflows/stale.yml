@@ -20,5 +20,5 @@ jobs:
           exempt-issue-labels: "s: WIP,s: in review"
           stale-pr-label: "s: stale"
           exempt-pr-labels: "s: WIP,s: in review"
-          days-before-stale: 30
+          days-before-stale: 90
           days-before-close: 14
