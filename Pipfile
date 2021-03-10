@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 "discord.py" = "~=1.6"
 coloredlogs = "~=15.0"
+uvloop = {version = "~=0.15", markers = "platform_system != 'Windows'"}
 
 [dev-packages]
 flake8 = "~=3.8"
