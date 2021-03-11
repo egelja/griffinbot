@@ -4,21 +4,22 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-"discord.py" = "1.5.1"
-coloredlogs = "*"
+"discord.py" = "~=1.6"
+coloredlogs = "~=15.0"
+uvloop = {version = "~=0.15", markers = "platform_system != 'Windows'"}
 
 [dev-packages]
-flake8 = "*"
-flake8-annotations = "*"
-flake8-bugbear = "*"
-flake8-builtins = "*"
-flake8-docstrings = "*"
-flake8-import-order = "*"
-flake8-tidy-imports = "*"
-pep8-naming = "*"
-isort = "*"
-pre-commit = "*"
-black = "*"
+flake8 = "~=3.8"
+flake8-annotations = "~=2.6"
+flake8-bugbear = "~=21.3"
+flake8-builtins = "~=1.5"
+flake8-docstrings = "~=1.5"
+flake8-import-order = "~=0.18"
+flake8-tidy-imports = "~=4.2"
+pep8-naming = "~=0.11"
+isort = "~=5.7"
+pre-commit = "~=2.11"
+black = "~=20.8b1"
 
 [requires]
 python_version = "3.9"
