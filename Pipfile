@@ -9,7 +9,7 @@ coloredlogs = "~=15.0"
 uvloop = {version = "~=0.15", markers = "platform_system != 'Windows'"}
 
 [dev-packages]
-flake8 = "~=3.8"
+flake8 = "~=3.9"
 flake8-annotations = "~=2.6"
 flake8-bugbear = "~=21.3"
 flake8-builtins = "~=1.5"
