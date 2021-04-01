@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  griffinbot:
+    build: .
+    restart: always
+    volumes:
+      - ./logs:/bot/logs
+      - .:/bot:ro
+    tty: true
+    env_file:
+      - .env

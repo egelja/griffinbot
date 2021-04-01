@@ -1,0 +1,15 @@
+.cache
+.coverage
+.coveragerc
+.editorconfig
+.git
+.gitattributes
+.github
+.gitignore
+.pytest_cache
+.venv
+.vscode
+__pycache__
+data
+*.log
+db.sqlite3*
