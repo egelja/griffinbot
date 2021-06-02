@@ -10,14 +10,7 @@ jobs:
     if: github.actor == 'dependabot[bot]'
     steps:
       - name: automerge
-        uses: actions/github-script@v4
+        uses: ahmadnassri/action-dependabot-auto-merge@v2
         with:
-          script: |
-            github.pulls.createReview({
-              owner: context.payload.repository.owner.login,
-              repo: context.payload.repository.name,
-              pull_number: context.payload.pull_request.number,
-              event: 'APPROVE',
-              body: "@dependabot merge"
-            })
+          target: minor
           github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
