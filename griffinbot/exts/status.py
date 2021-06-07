@@ -71,7 +71,7 @@ class Status(commands.Cog):
             color=Colour.gold(),
         ).set_author(
             name=self.bot.user.display_name,
-            url="https://github.com/NinoMaruszewski/griffinbot/",
+            url="https://github.com/MrAwesomeRocks/griffinbot/",
             icon_url=self.bot.user.avatar_url_as(static_format="png"),
         )
         await bot_log_channel.send(embed=embed)
