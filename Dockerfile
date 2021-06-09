@@ -1,24 +1,25 @@
 FROM python:3.9-slim-buster
 
 # Set pip to have cleaner logs and no saved cache
-ENV PIP_NO_CACHE_DIR=false \
-    PIPENV_HIDE_EMOJIS=1 \
-    PIPENV_IGNORE_VIRTUALENVS=1 \
-    PIPENV_NOSPIN=1
+ENV PIP_NO_CACHE_DIR=1 \
+    POETRY_VIRTUALENVS_CREATE=false
 
-# Pipenv
-RUN pip install -U pipenv
+# Install Poetry
+RUN pip install --upgrade poetry
 
 # Create working directory
 WORKDIR /bot
 
-# Download dependenices
-COPY Pipfile* ./
+# Copy depenencies and lockfile
+COPY pyproject.toml poetry.lock /bot/
+
+# Get the bot dependencies
 RUN apt-get update \
     && apt-get install -y --no-install-recommends python3-dev build-essential \
     && rm -rf /var/lib/apt/lists/* \
-    && pipenv sync --system \
-    && apt-get purge -y --auto-remove python3-dev build-essential
+    && poetry install --no-dev --no-interaction --no-ansi \
+    && apt-get purge -y --auto-remove python3-dev build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy source
 COPY . .

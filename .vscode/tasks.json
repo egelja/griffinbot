@@ -2,9 +2,9 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "pipenv launch",
+      "label": "poetry launch",
       "type": "shell",
-      "command": "pipenv run start"
+      "command": "poetry run start"
     }
   ]
 }

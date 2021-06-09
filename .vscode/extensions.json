@@ -1,7 +1,6 @@
 {
   "recommendations": [
     "aaron-bond.better-comments",
-    "bungcip.better-toml",
     "EditorConfig.EditorConfig",
     "GitHub.vscode-pull-request-github",
     "Gruntfuggly.todo-tree",
@@ -14,6 +13,7 @@
     "njpwerner.autodocstring",
     "redhat.vscode-yaml",
     "streetsidesoftware.code-spell-checker",
+    "tamasfe.even-better-toml",
     "VisualStudioExptTeam.vscodeintellicode"
   ],
   "unwantedRecommendations": [
