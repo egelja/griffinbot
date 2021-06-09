@@ -1,0 +1,91 @@
+name: Lint & Test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    env:
+      # Make sure every package goes where its supposed to go
+      PIP_USER: 1
+      POETRY_VIRTUALENVS_CREATE: false
+
+      # Specify explicit paths for python dependencies and the pre-commit
+      # environment so we know which directories to cache
+      POETRY_CACHE_DIR: ${{ github.workspace }}/.cache/py-user-base
+      PYTHONUSERBASE: ${{ github.workspace }}/.cache/py-user-base
+      PRE_COMMIT_HOME: ${{ github.workspace }}/.cache/pre-commit-cache
+
+    steps:
+      - name: Add custom PYTHONUSERBASE to PATH
+        run: echo '${{ env.PYTHONUSERBASE }}/bin/' >> $GITHUB_PATH
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+
+      # Cache dependencies using key with every relevant factor
+      - name: Cache python dependencies
+        uses: actions/cache@v2
+        id: python_cache
+        with:
+          path: ${{ env.PYTHONUSERBASE }}
+          key: "python-0-${{ runner.os }}-${{ env.PYTHONUSERBASE }}-\
+            ${{ steps.python.outputs.python-version }}-\
+            ${{ hashFiles('./pyproject.toml', './poetry.lock') }}"
+
+      # Install our dependencies if we did not restore a dependency cache
+      - name: Install dependencies using poetry
+        if: steps.python_cache.outputs.cache-hit != 'true'
+        run: |
+          pip install poetry
+          poetry install --no-interaction --no-ansi
+
+      # Cache precommit using relevant factors
+      - name: Pre-commit Environment Caching
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.PRE_COMMIT_HOME }}
+          key: "precommit-0-${{ runner.os }}-${{ env.PRE_COMMIT_HOME }}-\
+            ${{ steps.python.outputs.python-version }}-\
+            ${{ hashFiles('./.pre-commit-config.yaml') }}"
+
+      # Lint, but run flake8 separately with Github's formatting
+      - name: Run pre-commit hooks
+        run: export PIP_USER=0; SKIP=flake8 pre-commit run --all-files
+
+      # Run flake8 with Github's formatting
+      #
+      # Format used:
+      # ::error file={filename},line={line},col={col}::{message}
+      - name: Run flake8
+        run: "flake8 \
+          --format='::error file=%(path)s,line=%(row)d,col=%(col)d::[flake8] %(code)s: %(text)s'"
+
+      # Prepare the Pull Request Payload artifact
+      - name: Prepare Pull Request Payload artifact
+        id: prepare-artifact
+        if: always() && github.event_name == 'pull_request'
+        continue-on-error: true
+        run: cat $GITHUB_EVENT_PATH | jq '.pull_request' > pull_request_payload.json
+
+      # Only runs if there is an artifact to upload
+      - name: Upload a Build Artifact
+        if: always() && steps.prepare-artifact.outcome == 'success'
+        continue-on-error: true
+        uses: actions/upload-artifact@v2
+        with:
+          name: pull-request-payload
+          path: pull_request_payload.json

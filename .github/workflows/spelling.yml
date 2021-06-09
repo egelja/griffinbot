@@ -1,0 +1,38 @@
+name: Spell checking
+on:
+  pull_request_target:
+  push:
+    branches:
+      - master
+  issue_comment:
+
+jobs:
+  spelling:
+    name: Spell checking
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout and merge PR
+      if: "contains(github.event_name, 'pull_request')"
+      uses: actions/checkout@v2
+      with:
+        ref: refs/pull/${{github.event.pull_request.number}}/merge
+        fetch-depth: 5
+    - name: Checkout repo
+      if: "!contains(github.event_name, 'pull_request')"
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 5
+
+    - name: Check spelling
+      uses: check-spelling/check-spelling@prerelease
+      with:
+        experimental_apply_changes_via_bot: 1
+        extra_dictionaries:
+          cspell:bash/bash-words.txt
+          cspell:companies/companies.txt
+          cspell:django/django.txt
+          cspell:en_GB/src/wordsEnGb.txt
+          cspell:filetypes/filetypes.txt
+          cspell:fonts/fonts.txt
+          cspell:fullstack/fullstack.txt
+          cspell:python/python.txt
