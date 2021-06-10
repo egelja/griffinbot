@@ -34,7 +34,7 @@
 
 ## About <a name = "about"></a>
 
-This is s a Discord bot for the Roycemore Discord server. It is a game bot made from submitted community bots.
+This is a Discord bot for the Roycemore Discord server. It is a game bot made from submitted community bots and games.
 
 ## Getting Started <a name = "getting-started"></a>
 
@@ -42,48 +42,50 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-First install pipenv:
-
-```sh
-pip install pipenv
-```
+First install [Python](https://python.org/), [Poetry](https://python-poetry.org/docs/#installation), and [Docker](https://www.docker.com/) from their websites.
 
 ### Installing
 
-Now install everything you need from the Pipfile. This will also create a virtual environment.
+Now install everything you need using Poetry. This will also create a virtual environment.
 
 ```sh
-pipenv sync --dev
+poetry install
 ```
 
 Now set up `pre-commit`:
 
 ```sh
-pipenv run precommit
+poetry task run precommit
 ```
+
+Now you should be able to do development on the bot! For more details on contributing, see the [Contributing](./CONTRIBUTING.md) file.
 
 ## Usage <a name = "usage"></a>
 
 Starting the bot:
 
 ```sh
-pipenv run start
+docker-compose up
 ```
 
 Linting:
 
 ```sh
-pipenv run lint
+poetry task run lint
 ```
 
 ## Deployment <a name = "deployment"></a>
 
-You can use [PM2](https://pm2.keymetrics.io/) to deploy it. If you have a better solution, create an issue in the issue tracker.
+This bot is built using [Docker](https://www.docker.com/) and then deployed through the use of [remote docker-compose](https://www.docker.com/blog/how-to-deploy-on-remote-docker-hosts-with-docker-compose/).
 
 ## Built Using <a name = "built-using"></a>
 
 - [Discord.py](https://discordpy.readthedocs.io/en/latest/) - Discord API interface
-- [SQLite3](https://sqlite.org/index.html) - Database
+- [Uvloop](https://uvloop.readthedocs.io/) - Event loop
+- [Flake8](https://flake8.pycqa.org/en/latest/) - Linting
+- [Black](https://black.readthedocs.io/en/stable/) and [Isort](https://isort.readthedocs.io/en/latest/) - Formatting
+- [Poetry](https://python-poetry.org) - Package manager
+- [Docker](https://www.docker.com/) - Containerization and deployment
 
 ## Authors <a name = "authors"></a>
 
