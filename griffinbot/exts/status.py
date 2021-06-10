@@ -1,10 +1,16 @@
 import asyncio
 import logging
 from datetime import datetime
+from pathlib import Path
 
 from discord import Colour, Embed
 from discord.ext import commands
-from discord.ext.commands.errors import CommandError, MissingAnyRole, NoPrivateMessage
+from discord.ext.commands.errors import (
+    CommandError,
+    MissingAnyRole,
+    NoPrivateMessage,
+
+)
 
 from griffinbot.constants import Channels, Emoji, StaffRoles
 
@@ -19,7 +25,7 @@ class Status(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(aliases=["latency"])
+    @commands.command(aliases=("latency",))
     async def ping(self, ctx: commands.Context) -> None:
         """View the latency of the bot."""
         raw_bot_latency = (
@@ -41,7 +47,7 @@ class Status(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["ut"])
+    @commands.command(aliases=("ut",))
     async def uptime(self, ctx: commands.Context) -> None:
         """View the uptime of the bot."""
         uptime = datetime.utcnow() - self.bot.start_time
@@ -57,7 +63,7 @@ class Status(commands.Cog):
 
     @commands.guild_only()
     @commands.has_any_role(StaffRoles.bot_team_role, StaffRoles.admin_role)
-    @commands.command(aliases=["reboot"])
+    @commands.command(aliases=("reboot",))
     async def restart(self, ctx: commands.Context, delay: int = 0) -> None:
         """Restart the bot after a certain delay (in seconds)."""
         if delay != 0:
@@ -76,18 +82,52 @@ class Status(commands.Cog):
         )
         await bot_log_channel.send(embed=embed)
 
-        log.info(
-            f"Restarting at the request of {ctx.message.author.name}#{ctx.message.author.discriminator}"  # noqa: B950
-        )
+        log.info(f"Restarting at the request of {ctx.message.author}")
         await self.bot.logout()
-        # restarted by PM2 now
+        # auto-restarted now
+
+    @commands.guild_only()
+    @commands.has_any_role(StaffRoles.bot_team_role, StaffRoles.admin_role)
+    @commands.command(name="view-logs", aliases=("log", "logs"))
+    async def view_logs(
+        self, ctx: commands.Context, num_lines: int = 20, file: str = "bot.log"
+    ) -> None:
+        """View the last `num_lines` lines of the bot's log files.
+
+        By default, shows the last 20 lines.
+        The file parameter is for the log file to open, must be in the logs directory!
+        """
+        # Read the file
+        log_file = Path(".") / "logs" / file
+        with open(log_file, encoding="utf-8") as f:
+            text = f.read()
+
+        # Get the last `num_lines` lines of the file
+        lines = text.split("\n")
+        if lines[-1] == "":
+            lines.pop(-1)
+        last_lines = lines[-num_lines:]
+
+        # Paginate
+        paginator = commands.Paginator()
+        for line in last_lines:
+            paginator.add_line(line)
+
+        # Send the text
+        await ctx.send(
+            f"{Emoji.green_check} Here are the last {num_lines} lines of the "
+            + f"{file} log file!"
+        )
+        for page in paginator.pages:
+            await ctx.send(page)
 
     @restart.error
     async def restart_error(self, ctx: commands.Context, error: CommandError) -> None:
         """Error handler for the restart command."""
         if isinstance(error, MissingAnyRole):
             await ctx.send(
-                f"""{Emoji.no} You do not have permissions to restart the bot. Ping `@Bot Team` if the bot isn't working properly."""  # noqa: B950
+                f"{Emoji.no} You do not have permissions to restart the bot. "
+                + "Ping `@Bot Team` if the bot isn't working properly."
             )
         elif isinstance(error, NoPrivateMessage):
             await ctx.send(f"{Emoji.no} You must be in a server to restart the bot.")
