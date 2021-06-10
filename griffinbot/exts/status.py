@@ -99,8 +99,12 @@ class Status(commands.Cog):
         """
         # Read the file
         log_file = Path(".") / "logs" / file
-        with open(log_file, encoding="utf-8") as f:
-            text = f.read()
+        try:
+            with open(log_file, encoding="utf-8") as f:
+                text = f.read()
+        except FileNotFoundError:
+            await ctx.send(f"{Emoji.warning} Could not find the log file `{file}`.")
+            return
 
         # Get the last `num_lines` lines of the file
         lines = text.split("\n")
