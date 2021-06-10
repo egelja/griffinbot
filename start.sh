@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-# source ./.venv/bin/activate
-cd ~/discordBots/GriffinBot/griffinbot
-pipenv run start
+docker context use $1
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+docker context use default
