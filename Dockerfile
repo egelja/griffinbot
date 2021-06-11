@@ -6,7 +6,7 @@ ENV PIP_NO_CACHE_DIR=1 \
 
 # Get build dependencies
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends python3-dev build-essential libssl-dev libffi-dev rustc \
+    && apt-get install -y --no-install-recommends python3-dev build-essential libssl-dev libffi-dev cargo \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Poetry
@@ -20,7 +20,7 @@ COPY pyproject.toml poetry.lock /bot/
 
 # Get the bot dependencies, then remove build dependencies
 RUN poetry install --no-dev --no-interaction --no-ansi \
-    && apt-get purge -y --auto-remove python3-dev build-essential libssl-dev libffi-dev rustc \
+    && apt-get purge -y --auto-remove python3-dev build-essential libssl-dev libffi-dev cargo \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy source
