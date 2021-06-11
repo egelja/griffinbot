@@ -113,6 +113,7 @@ class StaffRoles(metaclass=JSONGetter):
     bot_team_role: int
 
 
+
 class Channels(metaclass=JSONGetter):
     """Channels from the guild of the bot."""
 
