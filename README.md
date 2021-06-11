@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/NinoMaruszewski/griffinbot" rel="noopener">
+  <a href="https://github.com/MrAwesomeRocks/griffinbot" rel="noopener">
     <img width=200px height=200px src="https://cdn.pixabay.com/photo/2019/02/25/00/54/griffin-4018762_960_720.png">
   </a>
 </p>
@@ -8,9 +8,9 @@
 
 <div align="center">
 
-[![GitHub issues](https://img.shields.io/github/issues/NinoMaruszewski/griffinbot?style=for-the-badge)](https://github.com/NinoMaruszewski/griffinbot/issues)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/NinoMaruszewski/griffinbot?style=for-the-badge)](https://github.com/NinoMaruszewski/griffinbot/pulls)
-[![GitHub](https://img.shields.io/github/license/NinoMaruszewski/griffinbot?style=for-the-badge)](./LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/MrAwesomeRocks/griffinbot?style=for-the-badge)](https://github.com/MrAwesomeRocks/griffinbot/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/MrAwesomeRocks/griffinbot?style=for-the-badge)](https://github.com/MrAwesomeRocks/griffinbot/pulls)
+[![GitHub](https://img.shields.io/github/license/MrAwesomeRocks/griffinbot?style=for-the-badge)](./LICENSE)
 
 </div>
 
@@ -89,5 +89,5 @@ This bot is built using [Docker](https://www.docker.com/) and then deployed thro
 
 ## Authors <a name = "authors"></a>
 
-- [@NinoMaruszewski](https://github.com/NinoMaruszewski/) - Idea & Initial work
+- [@MrAwesomeRocks](https://github.com/MrAwesomeRocks/) - Idea & Initial work
 - [@AlemSnyder](https://github.com/AlemSnyder/) - Minesweeper

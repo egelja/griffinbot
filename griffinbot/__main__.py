@@ -75,7 +75,7 @@ async def on_ready() -> None:
         color=Colour.green(),
     ).set_author(
         name=bot.user.display_name,
-        url="https://github.com/NinoMaruszewski/griffinbot/",
+        url="https://github.com/MrAwesomeRocks/griffinbot/",
         icon_url=bot.user.avatar_url_as(static_format="png"),
     )
     await channel.send(embed=embed)

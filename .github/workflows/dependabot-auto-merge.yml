@@ -1,0 +1,16 @@
+name: "Dependabot Automerge"
+
+on:
+  pull_request_target:
+
+jobs:
+  worker:
+    runs-on: ubuntu-latest
+
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - name: automerge
+        uses: ahmadnassri/action-dependabot-auto-merge@v2
+        with:
+          target: minor
+          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
