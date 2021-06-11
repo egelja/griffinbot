@@ -12,10 +12,7 @@ concurrency:
 
 jobs:
   lint-test:
-    strategy:
-      matrix:
-        platform: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.platform }}
+    runs-on: ubuntu-latest
     env:
       # Make sure every package goes where its supposed to go
       PIP_USER: 1
