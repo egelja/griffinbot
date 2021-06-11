@@ -2,11 +2,12 @@ FROM python:3.9-slim-buster
 
 # Set pip to have cleaner logs and no saved cache
 ENV PIP_NO_CACHE_DIR=1 \
-    POETRY_VIRTUALENVS_CREATE=false
+    POETRY_VIRTUALENVS_CREATE=false \
+    CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
 # Get build dependencies
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends python3-dev build-essential libssl-dev libffi-dev rustc=1.4.3 \
+    && apt-get install -y --no-install-recommends python3-dev build-essential libssl-dev libffi-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Poetry
@@ -20,7 +21,7 @@ COPY pyproject.toml poetry.lock /bot/
 
 # Get the bot dependencies, then remove build dependencies
 RUN poetry install --no-dev --no-interaction --no-ansi \
-    && apt-get purge -y --auto-remove python3-dev build-essential libssl-dev libffi-dev rustc \
+    && apt-get purge -y --auto-remove python3-dev build-essential libssl-dev libffi-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy source
