@@ -13,10 +13,12 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [master, dev]
+    branches:
+      - master
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [master, dev]
+    branches:
+      - master
   schedule:
     - cron: "00 12 * * 4"
 
@@ -75,3 +77,19 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v1
+
+      # Prepare the Pull Request Payload artifact
+      - name: Prepare Pull Request Payload artifact
+        id: prepare-artifact
+        if: always() && github.event_name == 'pull_request'
+        continue-on-error: true
+        run: cat $GITHUB_EVENT_PATH | jq '.pull_request' > pull_request_payload.json
+
+      # Only runs if there is an artifact to upload
+      - name: Upload a Build Artifact
+        if: always() && steps.prepare-artifact.outcome == 'success'
+        continue-on-error: true
+        uses: actions/upload-artifact@v2
+        with:
+          name: pull-request-payload
+          path: pull_request_payload.json

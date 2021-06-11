@@ -9,8 +9,24 @@ jobs:
 
     if: github.actor == 'dependabot[bot]'
     steps:
-      - name: automerge
+      - name: Automerge
         uses: ahmadnassri/action-dependabot-auto-merge@v2
         with:
           target: minor
           github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      # Prepare the Pull Request Payload artifact
+      - name: Prepare Pull Request Payload artifact
+        id: prepare-artifact
+        if: always() && github.event_name == 'pull_request'
+        continue-on-error: true
+        run: cat $GITHUB_EVENT_PATH | jq '.pull_request' > pull_request_payload.json
+
+      # Only runs if there is an artifact to upload
+      - name: Upload a Build Artifact
+        if: always() && steps.prepare-artifact.outcome == 'success'
+        continue-on-error: true
+        uses: actions/upload-artifact@v2
+        with:
+          name: pull-request-payload
+          path: pull_request_payload.json

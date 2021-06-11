@@ -5,7 +5,7 @@ on:
     workflows:
       - "Lint & Test"
     branches:
-      - main
+      - master
     types:
       - completed
 

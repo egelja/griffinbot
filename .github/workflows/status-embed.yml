@@ -6,6 +6,9 @@ on:
     workflows:
       - Lint & Test
       - Build
+      - Check spelling
+      - CodeQL
+      - Dependabot Automerge
     types:
       - completed
 

@@ -1,4 +1,4 @@
-name: Spell checking
+name: Check spelling
 on:
   pull_request_target:
   push:
@@ -11,18 +11,21 @@ jobs:
     name: Spell checking
     runs-on: ubuntu-latest
     steps:
+    # Checkout
     - name: Checkout and merge PR
       if: "contains(github.event_name, 'pull_request')"
       uses: actions/checkout@v2
       with:
         ref: refs/pull/${{github.event.pull_request.number}}/merge
         fetch-depth: 5
+
     - name: Checkout repo
       if: "!contains(github.event_name, 'pull_request')"
       uses: actions/checkout@v2
       with:
         fetch-depth: 5
 
+    # Run action
     - name: Check spelling
       uses: check-spelling/check-spelling@prerelease
       with:
@@ -37,3 +40,19 @@ jobs:
           cspell:fullstack/fullstack.txt
           cspell:python/python.txt
           cspell:html/html.txt
+
+    # Prepare the Pull Request Payload artifact
+    - name: Prepare Pull Request Payload artifact
+      id: prepare-artifact
+      if: always() && github.event_name == 'pull_request'
+      continue-on-error: true
+      run: cat $GITHUB_EVENT_PATH | jq '.pull_request' > pull_request_payload.json
+
+    # Only runs if there is an artifact to upload
+    - name: Upload a Build Artifact
+      if: always() && steps.prepare-artifact.outcome == 'success'
+      continue-on-error: true
+      uses: actions/upload-artifact@v2
+      with:
+        name: pull-request-payload
+        path: pull_request_payload.json

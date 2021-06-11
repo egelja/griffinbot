@@ -101,3 +101,5 @@ venv
 virtualenvs
 WORKDIR
 www
+emojis
+venvs
