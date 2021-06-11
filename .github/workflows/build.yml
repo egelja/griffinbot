@@ -59,7 +59,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
           tags: |
-            ghcr.io/NinoMaruszewski/griffinbot:latest
-            ghcr.io/NinoMaruszewski/griffinbot:${{ steps.sha_tag.outputs.tag }}
-          cache-from: type=registry,ref=ghcr.io/NinoMaruszewski/griffinbot:latest
+            ghcr.io/ninomaruszewski/griffinbot:latest
+            ghcr.io/ninomaruszewski/griffinbot:${{ steps.sha_tag.outputs.tag }}
+          cache-from: type=registry,ref=ghcr.io/ninomaruszewski/griffinbot:latest
           cache-to: type=inline
