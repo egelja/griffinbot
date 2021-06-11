@@ -36,3 +36,4 @@ jobs:
           cspell:fonts/fonts.txt
           cspell:fullstack/fullstack.txt
           cspell:python/python.txt
+          cspell:html/html.txt
