@@ -1,0 +1,44 @@
+# See https://github.com/check-spelling/check-spelling/wiki/Configuration-Examples:-patterns
+
+# ignore long runs of a single character:
+\b([A-Za-z])\g{-1}{3,}\b
+
+# marker for ignoring a comment to the end of the line
+#.*no-spell-check.*$
+
+# GitHub SHAs
+\bapi.github\.com/repos/[^/]+/[^/]+/[^/]+/[0-9a-f]+\b
+(?:\[[0-9a-f]+\]\(https:/|)/github\.com/[^/]+/[^/]+(?:/[^/]+/[0-9a-f]+(?:[-0-9a-zA-Z/#.]*|)\b|)
+\bgithub\.com/[^/]+/[^/]+[@#][0-9a-f]+\b
+# githubusercontent
+/[-a-z0-9]+\.githubusercontent\.com/[-a-zA-Z0-9?&=_\/.]*
+# gist github
+/gist\.github\.com/[^/]+/[0-9a-f]+
+# GitHub JSON
+"node_id": "[-a-zA-Z=;:/0-9+]*"
+# Contributor
+\[[^\]]+]\(https://github\.com/[^/]+\)
+
+
+# URL escaped characters
+\%[0-9A-F]{2}
+# c99 hex digits (not the full format, just one I've seen)
+0x[0-9a-fA-F](?:\.[0-9a-fA-F]*|)[pP]
+# sha256
+sha256:[0-9a-f]+
+# sha-... -- uses a fancy capture
+(['"]|&quot;)[0-9a-f]{40,}\g{-1}
+# hex in url queries
+=[0-9a-fA-F]+&
+# PGP
+\b(?:[0-9A-F]{4} ){9}[0-9A-F]{4}\b
+# hex digits including css/html color classes:
+(?:[\\0][xX]|\\u|[uU]\+|#x?|\%23)[0-9a-fA-FgGrR_]{2,}(?:[uU]?[lL]{0,2}|u\d+)\b
+# uuid:
+[<({"'>][0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[<'"})>]
+
+# Input to GitHub JSON
+content: "[-a-zA-Z=;:/0-9+]*="
+
+# macOS temp folders
+/var/folders/\w\w/\w+/T/

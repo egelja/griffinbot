@@ -108,7 +108,7 @@ class GameBoard:
 
     def stale(self) -> bool:
         """Check if the game is stale."""
-        if (datetime.now() - self.updated).total_seconds() > 120:
+        if (datetime.now() - self.updated).total_seconds() > 86400:
             log.trace("Stale")
             return True
         log.trace("Not stale")
@@ -261,11 +261,11 @@ class Minesweeper(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self._games = {}
-        self.clear_stale_games.start()
+        # self.clear_stale_games.start()
 
     def cog_unload(self) -> None:
         """Clean up while unloading the cog."""
-        self.clear_stale_games.cancel()
+        # self.clear_stale_games.cancel()
         return super().cog_unload()
 
     @tasks.loop(minutes=1.0)
@@ -281,7 +281,7 @@ class Minesweeper(commands.Cog):
             del self._games[game_id]
 
         stale = len(stale_games)
-        log.info(
+        log.debug(
             f"{stale} stale Minesweeper game{'s' if stale != 1 else ''} removed"
         )
 
@@ -486,13 +486,14 @@ class Minesweeper(commands.Cog):
         if str(ctx.message.author) not in self._games:
             # say something
             await ctx.send(
-                f"{Emoji.no} You don't have a game, or your previous game went stale. "
+                f"{Emoji.no} You don't have an in-progress minesweeper game. "  # ,"
+                # + "or your previous game went stale. "
                 + f"Run `{Bot.prefix}ms new-game` to start a new game."
             )
             return
 
         # Update the game to keep it from going stale
-        self._games[str(ctx.message.author)].update()
+        # self._games[str(ctx.message.author)].update()
 
         # ========
         #  Checks

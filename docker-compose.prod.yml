@@ -1,0 +1,8 @@
+version: "3.9"
+services:
+  griffinbot:
+    restart: always
+    env_file:
+      - .env
+    env:
+      - DEBUG: "False"

@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "griffinbot"
+version = "1.0.1"
+description = "A game bot for Discord."
+authors = [
+    "Nino Maruszewski <nino.maruszewski@gmail.com>",
+    "Alem Snyder <alemsnyder@gmail.com",
+]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+"discord.py" = "~=1.7.2"
+coloredlogs = "^15.0"
+uvloop = { version = "^0.15.2", markers = "platform_system != 'Windows'" }
+
+[tool.poetry.dev-dependencies]
+flake8 = "^3.9.2"
+flake8-annotations = "^2.6.2"
+flake8-bugbear = "^21.4.3"
+flake8-builtins = "^1.5.3"
+flake8-docstrings = "^1.6.0"
+flake8-import-order = "^0.18.1"
+flake8-tidy-imports = "^4.3.0"
+pep8-naming = "^0.11.1"
+isort = "^5.8.0"
+pre-commit = "^2.13.0"
+black = "^21.5b2"
+taskipy = "^1.8.1"
+python-dotenv = "^0.17.1"
+
+[tool.taskipy.tasks]
+start = { cmd = "python -m griffinbot", help = "start the bot" }
+lint = { cmd = "pre-commit run --all-files", help = "lint using pre-commit and flake8" }
+precommit = { cmd = "pre-commit install", help = "set up pre-commit" }
+format = { cmd = "black .; isort .", help = "format using black and isort" }
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
