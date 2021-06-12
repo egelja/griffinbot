@@ -42,7 +42,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-First install [Python](https://python.org/), [Poetry](https://python-poetry.org/docs/#installation), and [Docker](https://www.docker.com/) from their websites.
+First install [Python](https://python.org/), [Poetry](https://python-poetry.org/docs/#installation), and [Docker](https://www.docker.com/) from their websites. If you're on Linux, also download [Compose v2](https://docs.docker.com/compose/cli-command/#install-on-linux).
 
 ### Installing
 
@@ -65,7 +65,7 @@ Now you should be able to do development on the bot! For more details on contrib
 Starting the bot:
 
 ```sh
-docker-compose up
+docker compose up
 ```
 
 Linting:
@@ -76,7 +76,7 @@ poetry task run lint
 
 ## Deployment <a name = "deployment"></a>
 
-This bot is built using [Docker](https://www.docker.com/) and then deployed through the use of [remote docker-compose](https://www.docker.com/blog/how-to-deploy-on-remote-docker-hosts-with-docker-compose/).
+This bot is built using [Docker](https://www.docker.com/) and then deployed through the use of [remote docker compose](https://www.docker.com/blog/how-to-deploy-on-remote-docker-hosts-with-docker-compose/). To deploy it, create a docker context (see the link), then run `start.sh CONTEXT_NAME` or `start.bat CONTEXT_NAME`, depending on your platform.
 
 ## Built Using <a name = "built-using"></a>
 

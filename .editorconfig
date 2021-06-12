@@ -23,3 +23,6 @@ indent_size = 2
 # Pipenv does 4-space indentation it seems
 [Pipfile.lock]
 indent_size = 4
+
+[*.bat]
+end_of_line = crlf

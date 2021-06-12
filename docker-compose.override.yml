@@ -6,7 +6,7 @@ services:
       - ./logs:/bot/logs
       - .:/bot:ro
     environment:
-      DEBUG: 'true'
+      DEBUG: 'True'
     env_file:
       - .env
     tty: true

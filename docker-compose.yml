@@ -1,6 +1,6 @@
 version: "3.9"
 services:
   griffinbot:
-    # image: ghcr.io/NinoMaruszewski/griffinbot:latest
+    image: ghcr.io/mrawesomerocks/griffinbot:latest
     volumes:
       - ./logs:/bot/logs
