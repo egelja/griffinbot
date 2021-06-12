@@ -106,3 +106,5 @@ venvs
 rustc
 libssl
 libffi
+linux
+mrawesomerocks
