@@ -19,7 +19,7 @@ jobs:
     name: Build & Push
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         platform:
           - linux/amd64
@@ -53,7 +53,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username: mrawesomerocks
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # Build and push the container to the GitHub Container
@@ -67,7 +67,7 @@ jobs:
           push: true
           platforms: ${{ matrix.platform }}
           tags: |
-            ghcr.io/ninomaruszewski/griffinbot:latest
-            ghcr.io/ninomaruszewski/griffinbot:${{ steps.sha_tag.outputs.tag }}
+            ghcr.io/mrawesomerocks/griffinbot:latest
+            ghcr.io/mrawesomerocks/griffinbot:${{ steps.sha_tag.outputs.tag }}
           cache-from: type=registry,ref=ghcr.io/ninomaruszewski/griffinbot:latest
           cache-to: type=inline
