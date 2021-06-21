@@ -27,7 +27,7 @@ isort = "^5.8.0"
 pre-commit = "^2.13.0"
 black = "^21.6b0"
 taskipy = "^1.8.1"
-python-dotenv = "^0.17.1"
+python-dotenv = "^0.18.0"
 
 [tool.taskipy.tasks]
 start = { cmd = "python -m griffinbot", help = "start the bot" }
