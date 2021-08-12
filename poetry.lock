@@ -238,7 +238,7 @@ flake8 = "*"
 
 [[package]]
 name = "flake8-tidy-imports"
-version = "4.3.0"
+version = "4.4.0"
 description = "A flake8 plugin that helps you write tidier imports."
 category = "dev"
 optional = false
@@ -535,7 +535,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "79e7205a227494d273c8357a33c76f6f21eeabd166e3f10b0b1108c9617234c7"
+content-hash = "5124f31bfdfa50c6be985e68cfbeea1f7a8011938995abe493c195c8d6c7d2bf"
 
 [metadata.files]
 aiohttp = [
@@ -654,8 +654,8 @@ flake8-polyfill = [
     {file = "flake8_polyfill-1.0.2-py2.py3-none-any.whl", hash = "sha256:12be6a34ee3ab795b19ca73505e7b55826d5f6ad7230d31b18e106400169b9e9"},
 ]
 flake8-tidy-imports = [
-    {file = "flake8-tidy-imports-4.3.0.tar.gz", hash = "sha256:e66d46f58ed108f36da920e7781a728dc2d8e4f9269e7e764274105700c0a90c"},
-    {file = "flake8_tidy_imports-4.3.0-py3-none-any.whl", hash = "sha256:d6e64cb565ca9474d13d5cb3f838b8deafb5fed15906998d4a674daf55bd6d89"},
+    {file = "flake8-tidy-imports-4.4.0.tar.gz", hash = "sha256:27a6b3c2dcfdb4180eeac632a28d48513394b6a399ee6e3064df53ffcee5ea94"},
+    {file = "flake8_tidy_imports-4.4.0-py3-none-any.whl", hash = "sha256:b6902bbd4d1eae7f2070447d6aaa5e593c2c7f016c70dcef860e8d65e8f0457f"},
 ]
 humanfriendly = [
     {file = "humanfriendly-9.1-py2.py3-none-any.whl", hash = "sha256:d5c731705114b9ad673754f3317d9fa4c23212f36b29bdc4272a892eafc9bc72"},
